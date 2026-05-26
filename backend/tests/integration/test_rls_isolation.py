@@ -141,17 +141,15 @@ class TestContextSwitching:
 
 
 class TestAllTablesSmokeTest:
-    """Smoke test: 3 tabelas isolam simultaneamente."""
+    """Smoke test: 2 tabelas isolam simultaneamente."""
 
-    def test_all_tables_isolated_simultaneously(self, db_appuser: Session, sample_tenant_a: str, sample_device_a):
-        """InputDevice, AccessLog, AuditLog isolam-se simultaneamente por tenant."""
+    def test_all_tables_isolated_simultaneously(self, db_appuser: Session, sample_tenant_a, sample_device_a):
+        """InputDevice, AccessLog isolam-se simultaneamente por tenant."""
         set_tenant_context(db_appuser, sample_tenant_a)
-        
+
         devices = db_appuser.query(InputDevice).all()
         access_logs = db_appuser.query(AccessLog).all()
-        audit_logs = db_appuser.query(AuditLog).all()
-        
+
         # Todos devem estar isolados
         assert len(devices) == 1, "InputDevice isolada"
         assert all(log.device_id == sample_device_a.id for log in access_logs), "AccessLog isolada"
-        assert len(audit_logs) >= 0, "AuditLog isolada (pode estar vazia)"

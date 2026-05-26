@@ -18,7 +18,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.db.database import Base, set_tenant_context
-from app.models import InputDevice, AccessLog
+from app.models import InputDevice, AccessLog, Tenant
 
 
 @pytest.fixture(scope="session")
@@ -104,27 +104,35 @@ def db_appuser(session_factory_appuser) -> Generator[Session, None, None]:
 
 
 @pytest.fixture
-def sample_tenant_a() -> str:
-    """UUID tenant A."""
-    return "00000000-0000-0000-0000-000000000001"
+def sample_tenant_a(db_superuser: Session) -> uuid.UUID:
+    """Insere e retorna tenant A."""
+    tenant_id = uuid.UUID("00000000-0000-0000-0000-000000000001")
+    tenant = Tenant(id=tenant_id, name="Tenant A")
+    db_superuser.add(tenant)
+    db_superuser.commit()
+    return tenant_id
 
 
 @pytest.fixture
-def sample_tenant_b() -> str:
-    """UUID tenant B."""
-    return "00000000-0000-0000-0000-000000000002"
+def sample_tenant_b(db_superuser: Session) -> uuid.UUID:
+    """Insere e retorna tenant B."""
+    tenant_id = uuid.UUID("00000000-0000-0000-0000-000000000002")
+    tenant = Tenant(id=tenant_id, name="Tenant B")
+    db_superuser.add(tenant)
+    db_superuser.commit()
+    return tenant_id
 
 
 @pytest.fixture
-def sample_device_a(sample_tenant_a: str, db_superuser: Session) -> InputDevice:
+def sample_device_a(sample_tenant_a: uuid.UUID, db_superuser: Session) -> InputDevice:
     """Device de tenant A."""
     device = InputDevice(
-        id=str(uuid.uuid4()),
+        id=uuid.uuid4(),
         tenant_id=sample_tenant_a,
-        device_code="DEVICE_A_001",
-        device_pin="1234",
-        pin_and_card=0,
-        status=1,
+        name="Device A Test",
+        device_type="pin_pad",
+        pin_salt=b"salt_a" * 8,  # 48 bytes ≈ 256 bits
+        mqtt_topic="jfa/devices/device_a",
     )
     db_superuser.add(device)
     db_superuser.commit()
@@ -132,15 +140,15 @@ def sample_device_a(sample_tenant_a: str, db_superuser: Session) -> InputDevice:
 
 
 @pytest.fixture
-def sample_device_b(sample_tenant_b: str, db_superuser: Session) -> InputDevice:
+def sample_device_b(sample_tenant_b: uuid.UUID, db_superuser: Session) -> InputDevice:
     """Device de tenant B."""
     device = InputDevice(
-        id=str(uuid.uuid4()),
+        id=uuid.uuid4(),
         tenant_id=sample_tenant_b,
-        device_code="DEVICE_B_001",
-        device_pin="5678",
-        pin_and_card=0,
-        status=1,
+        name="Device B Test",
+        device_type="card_reader",
+        pin_salt=b"salt_b" * 8,  # 48 bytes ≈ 256 bits
+        mqtt_topic="jfa/devices/device_b",
     )
     db_superuser.add(device)
     db_superuser.commit()
@@ -150,14 +158,14 @@ def sample_device_b(sample_tenant_b: str, db_superuser: Session) -> InputDevice:
 @pytest.fixture(autouse=True)
 def cleanup_integration_data(db_superuser: Session):
     """Limpar dados de teste antes e depois de cada teste."""
-    db_superuser.execute(text("TRUNCATE TABLE audit_logs CASCADE"))
     db_superuser.execute(text("TRUNCATE TABLE access_logs CASCADE"))
     db_superuser.execute(text("TRUNCATE TABLE input_devices CASCADE"))
+    db_superuser.execute(text("TRUNCATE TABLE tenants CASCADE"))
     db_superuser.commit()
 
     yield
 
-    db_superuser.execute(text("TRUNCATE TABLE audit_logs CASCADE"))
     db_superuser.execute(text("TRUNCATE TABLE access_logs CASCADE"))
     db_superuser.execute(text("TRUNCATE TABLE input_devices CASCADE"))
+    db_superuser.execute(text("TRUNCATE TABLE tenants CASCADE"))
     db_superuser.commit()
