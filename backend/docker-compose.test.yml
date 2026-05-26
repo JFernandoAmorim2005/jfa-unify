@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  postgres-test:
+    image: postgres:15-alpine
+    container_name: jfa-postgres-test
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: test-password
+      POSTGRES_DB: jfa_test
+    ports:
+      - "5433:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    volumes:
+      - ./tests/integration/initdb:/docker-entrypoint-initdb.d
