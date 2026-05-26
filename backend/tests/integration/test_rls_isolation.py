@@ -4,6 +4,7 @@ Testes de integração para Row-Level Security (RLS) contra PostgreSQL real.
 Estratégia: 16 testes que validam fail-closed (sem contexto = zero linhas),
 isolamento SELECT/INSERT/UPDATE/DELETE, e context-switching na mesma sessão.
 """
+import uuid
 import pytest
 from sqlalchemy import text
 from sqlalchemy.orm import Session
@@ -70,18 +71,34 @@ class TestInsertCheckDevices:
     def test_insert_own_device_succeeds(self, db_appuser: Session, sample_tenant_a: str):
         """INSERT com tenant_id = contexto sucede."""
         set_tenant_context(db_appuser, sample_tenant_a)
-        new_device = InputDevice(id="device-test-own", tenant_id=sample_tenant_a, name="Test Device")
+        device_id = uuid.uuid4()
+        new_device = InputDevice(
+            id=device_id,
+            tenant_id=sample_tenant_a,
+            name="Test Device",
+            device_type="pin_pad",
+            mqtt_topic="test/device",
+            pin_salt=b"test_salt" * 8,
+        )
         db_appuser.add(new_device)
         db_appuser.commit()
-        # Validar que foi inserido
-        result = db_appuser.query(InputDevice).filter_by(id="device-test-own").first()
+        # SET LOCAL perdido após commit(); restaurar para verificação
+        set_tenant_context(db_appuser, sample_tenant_a)
+        result = db_appuser.query(InputDevice).filter_by(id=device_id).first()
         assert result is not None
 
     def test_insert_alien_device_fails(self, db_appuser: Session, sample_tenant_a: str, sample_tenant_b: str):
         """INSERT com tenant_id != contexto é bloqueado por WITH CHECK."""
         set_tenant_context(db_appuser, sample_tenant_a)
         # Tentar inserir com tenant_id de B
-        new_device = InputDevice(id="device-test-alien", tenant_id=sample_tenant_b, name="Alien Device")
+        new_device = InputDevice(
+            id=uuid.uuid4(),
+            tenant_id=sample_tenant_b,
+            name="Alien Device",
+            device_type="card_reader",
+            mqtt_topic="test/device_alien",
+            pin_salt=b"test_salt" * 8,
+        )
         db_appuser.add(new_device)
         with pytest.raises(Exception):  # RLS WITH CHECK constraint violation
             db_appuser.commit()
@@ -95,7 +112,8 @@ class TestUpdateIsolation:
         set_tenant_context(db_appuser, sample_tenant_a)
         db_appuser.query(InputDevice).filter_by(id=sample_device_a.id).update({"name": "Updated A"})
         db_appuser.commit()
-        # Verificar via query isolada
+        # SET LOCAL perdido após commit(); restaurar para verificação
+        set_tenant_context(db_appuser, sample_tenant_a)
         result = db_appuser.query(InputDevice).filter_by(id=sample_device_a.id).first()
         assert result.name == "Updated A"
 

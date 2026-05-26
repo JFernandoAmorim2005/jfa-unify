@@ -27,7 +27,7 @@ def postgres_url() -> str:
     user = os.environ.get("POSTGRES_USER", "postgres")
     password = os.environ.get("POSTGRES_PASSWORD", "test-password")
     host = os.environ.get("POSTGRES_HOST", "localhost")
-    port = os.environ.get("POSTGRES_PORT", "5433")
+    port = os.environ.get("POSTGRES_PORT", "5432")
     db = os.environ.get("POSTGRES_DB", "jfa_test")
     return f"postgresql+pg8000://{user}:{password}@{host}:{port}/{db}"
 
@@ -36,7 +36,7 @@ def postgres_url() -> str:
 def postgres_appuser_url() -> str:
     """URL para conexão app_user (respeita RLS) — testes RLS."""
     host = os.environ.get("POSTGRES_HOST", "localhost")
-    port = os.environ.get("POSTGRES_PORT", "5433")
+    port = os.environ.get("POSTGRES_PORT", "5432")
     db = os.environ.get("POSTGRES_DB", "jfa_test")
     return f"postgresql+pg8000://app_user:test-app-password@{host}:{port}/{db}"
 
@@ -44,6 +44,9 @@ def postgres_appuser_url() -> str:
 @pytest.fixture(scope="session", autouse=True)
 def setup_database(postgres_url: str) -> Generator[None, None, None]:
     """Setup: executa Alembic auto-migrate via Python API."""
+    # Definir DATABASE_URL no ambiente para que env.py o use.
+    os.environ["DATABASE_URL"] = postgres_url
+
     engine = create_engine(postgres_url)
 
     alembic_cfg = AlembicConfig("alembic.ini")
