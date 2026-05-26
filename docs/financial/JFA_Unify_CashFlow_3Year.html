@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JFA_Unify — Cash Flow & ROI Analysis (3 Anos)</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        .header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 2rem;
+        }
+        .section {
+            margin-bottom: 3rem;
+        }
+        .section h2 {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: transform 0.3s ease;
+        }
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+        .metric-card h3 {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .metric-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+        .metric-card .subtext {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-bottom: 2rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        table tr:hover {
+            background: #f8f9ff;
+        }
+        table tr:nth-child(even) {
+            background: #f8f9ff;
+        }
+        .positive {
+            color: #10b981;
+            font-weight: 600;
+        }
+        .negative {
+            color: #ef4444;
+            font-weight: 600;
+        }
+        .breakeven-marker {
+            background: #fbbf24;
+            color: #333;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #eee;
+        }
+        .tab-btn {
+            padding: 1rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #999;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .scenario-info {
+            background: #f0f4ff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #667eea;
+        }
+        .footer {
+            background: #f8f9ff;
+            padding: 1.5rem;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+        .export-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+            margin-right: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .export-btn:hover {
+            background: #764ba2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>JFA_Unify Financial Analysis</h1>
+            <p>3-Year Cash Flow, ROI & Breakeven Analysis (100 Locations)</p>
+        </div>
+
+        <div class="content">
+            <!-- Executive Summary -->
+            <div class="section">
+                <h2>📊 Executive Summary (3 Anos)</h2>
+                <div class="grid">
+                    <div class="metric-card">
+                        <h3>Total Revenue</h3>
+                        <div class="value">€589.4k</div>
+                        <div class="subtext">3-year gross</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Net Profit</h3>
+                        <div class="value">€476.3k</div>
+                        <div class="subtext">After all costs</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>ROI</h3>
+                        <div class="value">562.6%</div>
+                        <div class="subtext">Investment ratio</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Payback Period</h3>
+                        <div class="value">7.5 months</div>
+                        <div class="subtext">Year 1</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cash Flow Charts -->
+            <div class="section">
+                <h2>💰 Cash Flow & Profitability Trends</h2>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('cash-flow')">Cash Flow Monthly</button>
+                    <button class="tab-btn" onclick="switchTab('cumulative')">Cumulative Cash</button>
+                    <button class="tab-btn" onclick="switchTab('yearly')">Yearly P&L</button>
+                </div>
+
+                <div id="cash-flow" class="tab-content active">
+                    <div class="chart-container">
+                        <canvas id="cashFlowChart"></canvas>
+                    </div>
+                    <p style="color: #666; margin-top: 1rem; font-size: 0.9rem;">
+                        <strong>Interpretação:</strong> Área verde = revenue + suporte. Linha vermelha = custos operacionais.
+                        Breakeven ocorre no mês 7 (Julho Y1). A partir de então, cash flow permanece positivo e cresce até 50k€/mês.
+                    </p>
+                </div>
+
+                <div id="cumulative" class="tab-content">
+                    <div class="chart-container">
+                        <canvas id="cumulativeChart"></canvas>
+                    </div>
+                    <p style="color: #666; margin-top: 1rem; font-size: 0.9rem;">
+                        <strong>Interpretação:</strong> Gráfico mostra cashflow acumulado. Linha cruza zero em mês 7 = breakeven.
+                        Crescimento estabiliza em Y2-Y3 (plateau 100 locações).
+                    </p>
+                </div>
+
+                <div id="yearly" class="tab-content">
+                    <div class="chart-container">
+                        <canvas id="yearlyChart"></canvas>
+                    </div>
+                    <p style="color: #666; margin-top: 1rem; font-size: 0.9rem;">
+                        <strong>Interpretação:</strong> Y1 inclui desenvolvimento one-time (€9k COGS). Y2-Y3 sem COGS → margem 70%+.
+                        Y1 net = €173.4k (após €9k dev). Y2-Y3 net = €161.2k/ano (estabilizado).
+                    </p>
+                </div>
+            </div>
+
+            <!-- Detailed Monthly Breakdown -->
+            <div class="section">
+                <h2>📋 Monthly Breakdown (Meses 1-12 + Year Summaries)</h2>
+                <div class="scenario-info">
+                    <strong>Cenário Base:</strong> 100 locações, 3 revenue streams (SaaS €50/mês, per-access €0.50, setup €500),
+                    suporte crescente Y1 → Y3, hardware maintenance 5% failure rate.
+                </div>
+                <table id="detailTable">
+                    <thead>
+                        <tr>
+                            <th>Período</th>
+                            <th>Receita Bruta</th>
+                            <th>OpEx Total</th>
+                            <th>COGS Dev</th>
+                            <th>Lucro Bruto</th>
+                            <th>Lucro Líquido</th>
+                            <th>Cashflow Acum.</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Scenarios -->
+            <div class="section">
+                <h2>🎯 Scalability Scenarios</h2>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchScenario('s50')">50 Locations</button>
+                    <button class="tab-btn" onclick="switchScenario('s100')">100 Locations</button>
+                    <button class="tab-btn" onclick="switchScenario('s200')">200 Locations</button>
+                    <button class="tab-btn" onclick="switchScenario('s500')">500 Locations</button>
+                </div>
+
+                <div id="s50" class="tab-content active scenario-table">
+                    <div class="scenario-info">
+                        <strong>Cenário: 50 Locações (18 meses launch)</strong>
+                    </div>
+                    <table>
+                        <tr>
+                            <th>Métrica</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Y1 Revenue</td>
+                            <td class="positive">€115.000</td>
+                        </tr>
+                        <tr>
+                            <td>Y1 OpEx</td>
+                            <td class="negative">€22.000</td>
+                        </tr>
+                        <tr>
+                            <td>Y1 Net</td>
+                            <td class="positive">€84.000</td>
+                        </tr>
+                        <tr>
+                            <td>Payback</td>
+                            <td>8 months</td>
+                        </tr>
+                        <tr>
+                            <td>3-Year Profit</td>
+                            <td class="positive">€223.000</td>
+                        </tr>
+                        <tr>
+                            <td>Hardware + Install</td>
+                            <td>€10.000 + €7.500</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="s100" class="tab-content scenario-table">
+                    <div class="scenario-info">
+                        <strong>Cenário: 100 Locações (24 meses launch)</strong>
+                    </div>
+                    <table>
+                        <tr>
+                            <th>Métrica</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Y1 Revenue</td>
+                            <td class="positive">€229.800</td>
+                        </tr>
+                        <tr>
+                            <td>Y1 OpEx</td>
+                            <td class="negative">€37.300</td>
+                        </tr>
+                        <tr>
+                            <td>Y1 Net</td>
+                            <td class="positive">€173.400</td>
+                        </tr>
+                        <tr>
+                            <td>Payback</td>
+                            <td><span class="breakeven-marker">7.5 months</span></td>
+                        </tr>
+                        <tr>
+                            <td>3-Year Profit</td>
+                            <td class="positive">€476.300</td>
+                        </tr>
+                        <tr>
+                            <td>Hardware + Install</td>
+                            <td>€20.000 + €20.150</td>
+                        </tr>
+                        <tr>
+                            <td>Gross Margin</td>
+                            <td>65% (Y1), 70%+ (Y2-Y3)</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="s200" class="tab-content scenario-table">
+                    <div class="scenario-info">
+                        <strong>Cenário: 200 Locações (30 meses launch)</strong>
+                    </div>
+                    <table>
+                        <tr>
+                            <th>Métrica</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Y1 Revenue</td>
+                            <td class="positive">€459.600</td>
+                        </tr>
+                        <tr>
+                            <td>Y1 OpEx</td>
+                            <td class="negative">€55.000</td>
+                        </tr>
+                        <tr>
+                            <td>Y1 Net</td>
+                            <td class="positive">€385.200</td>
+                        </tr>
+                        <tr>
+                            <td>Payback</td>
+                            <td>6 months</td>
+                        </tr>
+                        <tr>
+                            <td>3-Year Profit</td>
+                            <td class="positive">€1.065.000</td>
+                        </tr>
+                        <tr>
+                            <td>Hardware + Install</td>
+                            <td>€40.000 + €30.000</td>
+                        </tr>
+                        <tr>
+                            <td>Gross Margin</td>
+                            <td>70%+</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="s500" class="tab-content scenario-table">
+                    <div class="scenario-info">
+                        <strong>Cenário: 500 Locações (48 meses launch)</strong>
+                    </div>
+                    <table>
+                        <tr>
+                            <th>Métrica</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Y1 Revenue</td>
+                            <td class="positive">€1.149.000</td>
+                        </tr>
+                        <tr>
+                            <td>Y1 OpEx</td>
+                            <td class="negative">€120.000</td>
+                        </tr>
+                        <tr>
+                            <td>Y1 Net</td>
+                            <td class="positive">€922.000</td>
+                        </tr>
+                        <tr>
+                            <td>Payback</td>
+                            <td>4 months</td>
+                        </tr>
+                        <tr>
+                            <td>3-Year Profit</td>
+                            <td class="positive">€2.486.000</td>
+                        </tr>
+                        <tr>
+                            <td>Hardware + Install</td>
+                            <td>€100.000 + €75.000</td>
+                        </tr>
+                        <tr>
+                            <td>Gross Margin</td>
+                            <td>72%+</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Revenue Model Breakdown -->
+            <div class="section">
+                <h2>💵 Revenue Model (100 Locations, Y1)</h2>
+                <div class="chart-container">
+                    <canvas id="revenueBreakdownChart"></canvas>
+                </div>
+                <table>
+                    <tr>
+                        <th>Stream</th>
+                        <th>Price</th>
+                        <th>Volume</th>
+                        <th>Y1 Revenue</th>
+                        <th>% Total</th>
+                    </tr>
+                    <tr>
+                        <td><strong>SaaS Multi-tenant</strong> (gestão acesso + bilhética)</td>
+                        <td>€50/mês</td>
+                        <td>100 locations</td>
+                        <td class="positive">€60.000</td>
+                        <td>26%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Per-access Fee</strong> (€0.50 × 20k acessos/ano/loc)</td>
+                        <td>€0.50</td>
+                        <td>2M acessos/ano</td>
+                        <td class="positive">€100.000</td>
+                        <td>43%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Setup Fee</strong> (one-time installation)</td>
+                        <td>€500</td>
+                        <td>100 locations</td>
+                        <td class="positive">€50.000</td>
+                        <td>22%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Premium Features</strong> (analytics, integrations)</td>
+                        <td>€20/mês</td>
+                        <td>20 locations</td>
+                        <td class="positive">€4.800</td>
+                        <td>2%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hardware Margin</strong> (€200 cost + €50 margin)</td>
+                        <td>+€50</td>
+                        <td>100 units</td>
+                        <td class="positive">€5.000</td>
+                        <td>2%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Maintenance/Support</strong></td>
+                        <td>€100/ano</td>
+                        <td>100 locations</td>
+                        <td class="positive">€10.000</td>
+                        <td>4%</td>
+                    </tr>
+                    <tr style="background: #f8f9ff; font-weight: 600;">
+                        <td colspan="3"><strong>TOTAL Y1 REVENUE</strong></td>
+                        <td class="positive">€229.800</td>
+                        <td>100%</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Key Assumptions -->
+            <div class="section">
+                <h2>⚙️ Key Assumptions & Drivers</h2>
+                <table>
+                    <tr>
+                        <th>Parâmetro</th>
+                        <th>Valor</th>
+                        <th>Justificação</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Ramp-up Timeline</strong></td>
+                        <td>24 meses para 100 locs</td>
+                        <td>Crescimento orgânico (pilot → 10 → 50 → 100)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hardware COGS</strong></td>
+                        <td>€200/unit</td>
+                        <td>Tuya Hub €95 + Relay + Sensor + PSU + cablagem</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Development one-time</strong></td>
+                        <td>€18.170</td>
+                        <td>FastAPI + SvelteKit + tests (5 fases, 11 semanas)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Installation Cost</strong></td>
+                        <td>€350 (1º), €200 (replicas)</td>
+                        <td>Eletricista + config + tests (escalável)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Churn Rate</strong></td>
+                        <td>0% (sticky, critical infra)</td>
+                        <td>Bilhética + access control = high switching cost</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hardware Failure Rate</strong></td>
+                        <td>5% annual</td>
+                        <td>Tuya típico, maintenance revenue €10k/ano</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Per-location Average Accesses</strong></td>
+                        <td>20.000/ano (55/dia)</td>
+                        <td>WC público + bilhética + torniquete (peak time: 20-30/h)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>OpEx Growth</strong></td>
+                        <td>Y1: €37.3k, Y2: €55.8k, Y3: €57.8k</td>
+                        <td>Support headcount: 0.5 → 1.0 → 1.0 FTE</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Margin Compression</strong></td>
+                        <td>-2.5%/ano (Y1→Y2)</td>
+                        <td>Plateau 100 locs, OpEx dilution</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Risk Analysis -->
+            <div class="section">
+                <h2>⚠️ Risk Analysis & Mitigation</h2>
+                <table>
+                    <tr>
+                        <th>Risk</th>
+                        <th>Impact</th>
+                        <th>Probability</th>
+                        <th>Mitigation</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Hardware delays</strong> (Tuya distributor lead time)</td>
+                        <td>2-week timeline slip</td>
+                        <td>Medium (20%)</td>
+                        <td>Order week 0, backup distribuidor secundário</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pilot churn</strong> (WC-A não adora produto)</td>
+                        <td>€5k loss + reputação</td>
+                        <td>Low (10%)</td>
+                        <td>User testing Week 4, pivot quick (ex: tourniquete vs pin-only)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RLS schema complexity</strong> (Suite integration bloccker)</td>
+                        <td>€2k dev cost overrun + 2 week delay</td>
+                        <td>Medium (25%)</td>
+                        <td>Pair with Suite architect (early), schema POC Week 2</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Stripe/Moloni API downtime</strong></td>
+                        <td>Lost access transactions (€0.50 × N)</td>
+                        <td>Low (5%)</td>
+                        <td>Local cache + retry logic, failover to pre-auth stored value</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Market saturation</strong> (100 locs ceiling)</td>
+                        <td>Revenue plateaus Y2+, only margins grow</td>
+                        <td>High (70%)</td>
+                        <td>Prepare Phase 2B: gates + remotes (Shelly bridge) Y3</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Support cost overrun</strong> (support FTE = 1.5 vs 1.0)</td>
+                        <td>OpEx +€12k/ano</td>
+                        <td>Medium (30%)</td>
+                        <td>Invest in self-service (API docs, SDK, support portal)</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Export Section -->
+            <div class="section">
+                <h2>📥 Export Data</h2>
+                <button class="export-btn" onclick="exportToCSV()">📊 Download CSV (Monthly Detail)</button>
+                <button class="export-btn" onclick="exportToJSON()">📋 Download JSON (Full Model)</button>
+                <button class="export-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>JFA_Unify Financial Analysis</strong> • Generated: 2026-05-26 • BRIO Phase 3: PLANEAR</p>
+            <p>Confidential — Internal Use Only</p>
+        </div>
+    </div>
+
+    <script>
+        // Data for charts
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Y1', 'Y2', 'Y3'];
+        const grossRevenue = [55.433, 5.433, 14.266, 14.816, 23.150, 26.533, 32.733, 38.733, 44.833, 49.166, 51.333, 53.500, 229.800, 179.800, 179.800];
+        const totalOpEx = [3.117, 3.117, 3.117, 3.207, 3.207, 3.207, 3.837, 4.004, 4.054, 4.114, 4.114, 4.114, 38.368, 55.800, 57.800];
+        const netIncome = [48.199, -3.593, 5.534, 8.218, 16.552, 19.935, 25.059, 32.534, 38.584, 42.776, 45.024, 47.386, 173.432, 161.244, 160.644];
+        const cumulativeCash = [48.199, 44.606, 50.140, 58.358, 74.910, 94.845, 119.904, 152.438, 191.022, 233.798, 278.822, 326.208, 326.208, 487.452, 648.096];
+
+        // Initialize charts
+        const chartDefaults = {
+            plugins: {
+                legend: {
+                    labels: {
+                        font: { size: 12, weight: 'bold' },
+                        padding: 15,
+                        usePointStyle: true
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    ticks: {
+                        callback: function(value) {
+                            return '€' + value.toLocaleString('pt-PT');
+                        }
+                    }
+                }
+            }
+        };
+
+        // Cash Flow Chart
+        const ctxCashFlow = document.getElementById('cashFlowChart').getContext('2d');
+        new Chart(ctxCashFlow, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [
+                    {
+                        label: 'Revenue',
+                        data: grossRevenue,
+                        backgroundColor: '#10b981',
+                        borderColor: '#059669',
+                        borderWidth: 2,
+                        yAxisID: 'y',
+                        order: 2
+                    },
+                    {
+                        label: 'Operating Costs',
+                        data: totalOpEx,
+                        backgroundColor: '#ef4444',
+                        borderColor: '#dc2626',
+                        borderWidth: 2,
+                        yAxisID: 'y',
+                        order: 2
+                    },
+                    {
+                        label: 'Net Income',
+                        data: netIncome,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 3,
+                        type: 'line',
+                        yAxisID: 'y',
+                        order: 1,
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                ...chartDefaults,
+                responsive: true,
+                maintainAspectRatio: false,
+                title: 'Monthly Cash Flow'
+            }
+        });
+
+        // Cumulative Cash Flow Chart
+        const ctxCumulative = document.getElementById('cumulativeChart').getContext('2d');
+        new Chart(ctxCumulative, {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Cumulative Cash Flow',
+                    data: cumulativeCash,
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#667eea',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                ...chartDefaults,
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    ...chartDefaults.plugins,
+                    annotation: {
+                        annotations: {
+                            breakeven: {
+                                type: 'line',
+                                xMin: 7,
+                                xMax: 7,
+                                borderColor: 'red',
+                                borderWidth: 2
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Yearly P&L Chart
+        const ctxYearly = document.getElementById('yearlyChart').getContext('2d');
+        new Chart(ctxYearly, {
+            type: 'bar',
+            data: {
+                labels: ['Year 1', 'Year 2', 'Year 3'],
+                datasets: [
+                    {
+                        label: 'Gross Revenue',
+                        data: [229.8, 179.8, 179.8],
+                        backgroundColor: '#10b981'
+                    },
+                    {
+                        label: 'Operating Expense',
+                        data: [-38.4, -55.8, -57.8],
+                        backgroundColor: '#ef4444'
+                    },
+                    {
+                        label: 'Net Income',
+                        data: [173.4, 161.2, 160.6],
+                        backgroundColor: '#667eea'
+                    }
+                ]
+            },
+            options: {
+                ...chartDefaults,
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: undefined
+            }
+        });
+
+        // Revenue Breakdown Pie Chart
+        const ctxRevenue = document.getElementById('revenueBreakdownChart').getContext('2d');
+        new Chart(ctxRevenue, {
+            type: 'doughnut',
+            data: {
+                labels: ['Per-access Fee', 'SaaS Subscriptions', 'Setup Fees', 'Hardware Margin', 'Premium Features', 'Maintenance'],
+                datasets: [{
+                    data: [100, 60, 50, 5, 4.8, 10],
+                    backgroundColor: [
+                        '#667eea',
+                        '#764ba2',
+                        '#f093fb',
+                        '#4facfe',
+                        '#00f2fe',
+                        '#43e97b'
+                    ],
+                    borderColor: '#fff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            font: { size: 12, weight: 'bold' },
+                            padding: 15
+                        }
+                    }
+                }
+            }
+        });
+
+        // Populate table
+        const tableData = [
+            { period: 'Q1', month: 1, revenue: '€55.433k', opex: '€3.117k', cogs: '€5.513k', profit: '€46.903k', net: '€48.199k', cumulative: '€48.199k', status: 'Dev Phase 1 Start' },
+            { period: 'Q1', month: 2, revenue: '€5.433k', opex: '€3.117k', cogs: '-€5.513k', profit: '€7.829k', net: '-€3.593k', cumulative: '€44.606k', status: 'Phase 1 Midpoint' },
+            { period: 'Q1', month: 3, revenue: '€14.266k', opex: '€3.117k', cogs: '-€4.866k', profit: '€16.015k', net: '€5.534k', cumulative: '€50.140k', status: 'Phase 1 Complete' },
+            { period: 'Q2', month: 4, revenue: '€14.816k', opex: '€3.207k', cogs: '-€3.391k', profit: '€15.000k', net: '€8.218k', cumulative: '€58.358k', status: 'Phase 2 Start' },
+            { period: 'Q2', month: 5, revenue: '€23.150k', opex: '€3.207k', cogs: '-€3.391k', profit: '€23.334k', net: '€16.552k', cumulative: '€74.910k', status: 'Pilot #2 Active' },
+            { period: 'Q2', month: 6, revenue: '€26.533k', opex: '€3.207k', cogs: '-€3.391k', profit: '€26.717k', net: '€19.935k', cumulative: '€94.845k', status: 'Pilot #3 Enrolled' },
+            { period: 'Q3', month: 7, revenue: '€32.733k', opex: '€3.837k', cogs: '-€3.391k', profit: '€32.287k', net: '€25.059k', cumulative: '€119.904k', status: 'BREAKEVEN - Phase 3' },
+            { period: 'Q3', month: 8, revenue: '€38.733k', opex: '€4.004k', cogs: '-€2.195k', profit: '€36.924k', net: '€32.534k', cumulative: '€152.438k', status: 'Phase 4 Start' },
+            { period: 'Q3', month: 9, revenue: '€44.833k', opex: '€4.054k', cogs: '-€2.195k', profit: '€42.974k', net: '€38.584k', cumulative: '€191.022k', status: 'Moloni Active' },
+            { period: 'Q4', month: 10, revenue: '€49.166k', opex: '€4.114k', cogs: '-€2.195k', profit: '€47.247k', net: '€42.776k', cumulative: '€233.798k', status: 'Phase 5 Gates' },
+            { period: 'Q4', month: 11, revenue: '€51.333k', opex: '€4.114k', cogs: '-€2.195k', profit: '€49.414k', net: '€45.024k', cumulative: '€278.822k', status: 'Production Mode' },
+            { period: 'Q4', month: 12, revenue: '€53.500k', opex: '€4.114k', cogs: '-€1.550k', profit: '€50.936k', net: '€47.386k', cumulative: '€326.208k', status: 'Year 1 Complete' }
+        ];
+
+        tableData.forEach(row => {
+            const tr = document.createElement('tr');
+            const breakeven = row.status.includes('BREAKEVEN') ? ' style="background: #fbbf24; font-weight: 600;"' : '';
+            tr.innerHTML = `
+                <td>${row.period} M${row.month}</td>
+                <td class="positive">${row.revenue}</td>
+                <td class="negative">${row.opex}</td>
+                <td>${row.cogs}</td>
+                <td class="positive">${row.profit}</td>
+                <td class="positive" ${breakeven}>${row.net}</td>
+                <td class="positive">${row.cumulative}</td>
+                <td>${row.status}</td>
+            `;
+            document.getElementById('tableBody').appendChild(tr);
+        });
+
+        // Tab switching
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function switchScenario(scenario) {
+            document.querySelectorAll('.scenario-table').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tabs .tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(scenario).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Export functions
+        function exportToCSV() {
+            const csv = "Period,Gross_Revenue,OpEx,COGS_Dev,Gross_Profit,Net_Income,Cumulative_Cashflow,Status\n" +
+                tableData.map(row =>
+                    `${row.period} M${row.month},"${row.revenue}","${row.opex}","${row.cogs}","${row.profit}","${row.net}","${row.cumulative}","${row.status}"`
+                ).join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'JFA_Unify_CashFlow_Detail.csv';
+            a.click();
+        }
+
+        function exportToJSON() {
+            const data = {
+                title: 'JFA_Unify Financial Analysis',
+                generatedAt: new Date().toISOString(),
+                scenarios: {
+                    baseline100: {
+                        locations: 100,
+                        y1Revenue: 229800,
+                        y1OpEx: 38368,
+                        y1Net: 173432,
+                        payback_months: 7.5,
+                        roi_3year: '562.6%',
+                        monthlyData: tableData
+                    }
+                }
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'JFA_Unify_FinancialModel.json';
+            a.click();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JFA_Unify — Cronograma Gantt (5 Fases, 11 Semanas)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        .header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 2rem;
+        }
+        .gantt-container {
+            overflow-x: auto;
+            margin: 2rem 0;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+        .gantt {
+            display: flex;
+            min-width: 1000px;
+        }
+        .gantt-label {
+            width: 200px;
+            border-right: 2px solid #667eea;
+            display: flex;
+            flex-direction: column;
+        }
+        .gantt-label-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            color: #333;
+            min-height: 80px;
+        }
+        .gantt-label-item.header {
+            background: #f8f9ff;
+            font-size: 0.9rem;
+        }
+        .gantt-chart {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .gantt-header {
+            display: flex;
+            border-bottom: 2px solid #667eea;
+            background: #f8f9ff;
+            position: sticky;
+            top: 0;
+        }
+        .gantt-week {
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #667eea;
+            border-right: 1px solid #ddd;
+            min-width: 60px;
+        }
+        .gantt-row {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            min-height: 80px;
+            align-items: center;
+        }
+        .gantt-bar-container {
+            flex: 1;
+            position: relative;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            border-right: 1px solid #ddd;
+            padding: 0 4px;
+            min-width: 60px;
+        }
+        .gantt-bar {
+            position: absolute;
+            height: 40px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .gantt-bar:hover {
+            transform: scaleY(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .phase1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .phase2 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .phase3 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        .phase4 {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        .phase5 {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        .milestone {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+        }
+        .legend {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: #f8f9ff;
+            border-radius: 8px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+        .section {
+            margin: 3rem 0;
+        }
+        .section h2 {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+        .section h3 {
+            color: #555;
+            font-size: 1.1rem;
+            margin: 1.5rem 0 0.75rem 0;
+        }
+        .task-list {
+            list-style: none;
+            padding: 0;
+        }
+        .task-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #eee;
+            color: #666;
+        }
+        .task-list li:before {
+            content: "▸ ";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        .critical {
+            color: #ef4444;
+            font-weight: 600;
+        }
+        .success {
+            color: #10b981;
+            font-weight: 600;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        table th {
+            background: #667eea;
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        table tr:hover {
+            background: #f8f9ff;
+        }
+        .footer {
+            background: #f8f9ff;
+            padding: 1.5rem;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+            margin-top: 2rem;
+        }
+        .warning-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            color: #92400e;
+        }
+        .success-box {
+            background: #dcfce7;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            color: #166534;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>JFA_Unify Cronograma — 5 Fases em 11 Semanas</h1>
+            <p>Timeline Gantt + Dependências + Milestones Críticos</p>
+        </div>
+
+        <div class="content">
+            <!-- Gantt Chart -->
+            <div class="section">
+                <h2>📅 Cronograma Gantt Visual (11 + 2 Semanas Buffer)</h2>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color phase1"></div>
+                        <span><strong>Fase 1:</strong> MVP Tuya (2 sem)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color phase2"></div>
+                        <span><strong>Fase 2:</strong> Card Reader (2 sem)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color phase3"></div>
+                        <span><strong>Fase 3:</strong> Suite Integration (1 sem)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color phase4"></div>
+                        <span><strong>Fase 4:</strong> Payment (2 sem)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color phase5"></div>
+                        <span><strong>Fase 5:</strong> Gates + Hardening (2 sem)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color milestone"></div>
+                        <span><strong>Milestone:</strong> Crítico</span>
+                    </div>
+                </div>
+
+                <div class="gantt-container">
+                    <div class="gantt">
+                        <div class="gantt-label">
+                            <div class="gantt-label-item header">Phase & Tasks</div>
+                            <div class="gantt-label-item">Hardware Sourcing</div>
+                            <div class="gantt-label-item">Tuya Integration (FastAPI)</div>
+                            <div class="gantt-label-item">Keypad Config</div>
+                            <div class="gantt-label-item">Pilot #1 (WC-A)</div>
+                            <div class="gantt-label-item">PN532 Sourcing</div>
+                            <div class="gantt-label-item">Double-Auth Flow</div>
+                            <div class="gantt-label-item">Suite RLS Schema</div>
+                            <div class="gantt-label-item">Stripe Integration</div>
+                            <div class="gantt-label-item">Moloni API</div>
+                            <div class="gantt-label-item">Shelly Bridge</div>
+                            <div class="gantt-label-item">E2E Testing (All)</div>
+                            <div class="gantt-label-item">Production Deploy</div>
+                        </div>
+
+                        <div class="gantt-chart">
+                            <div class="gantt-header">
+                                <div class="gantt-week">W1</div>
+                                <div class="gantt-week">W2</div>
+                                <div class="gantt-week">W3</div>
+                                <div class="gantt-week">W4</div>
+                                <div class="gantt-week">W5</div>
+                                <div class="gantt-week">W6</div>
+                                <div class="gantt-week">W7</div>
+                                <div class="gantt-week">W8</div>
+                                <div class="gantt-week">W9</div>
+                                <div class="gantt-week">W10</div>
+                                <div class="gantt-week">W11</div>
+                                <div class="gantt-week">W12</div>
+                                <div class="gantt-week">W13</div>
+                            </div>
+
+                            <!-- Hardware Sourcing -->
+                            <div class="gantt-row">
+                                <div class="gantt-bar-container" style="border-right: none;">
+                                    <div class="gantt-bar milestone" style="left: 0%; width: 8.33%;" title="CRITICAL: Tuya distributor lead time">Lead time</div>
+                                </div>
+                            </div>
+
+                            <!-- Tuya Integration -->
+                            <div class="gantt-row">
+                                <div class="gantt-bar-container" style="border-right: none;">
+                                    <div class="gantt-bar phase1" style="left: 0%; width: 18.66%;" title="FastAPI skeleton + MQTT bridge">Phase 1</div>
+                                </div>
+                            </div>
+
+                            <!-- Keypad Config -->
+                            <div class="gantt-row">
+                                <div class="gantt-bar-container" style="border-right: none;">
+                                    <div class="gantt-bar phase1" style="left: 8.33%; width: 18.66%;" title="Keycap integration + tests">Phase 1</div>
+                                </div>
+                            </div>
+
+                            <!-- Pilot #1 -->
+                            <div class="gantt-row">
+                                <div class="gantt-bar-container" style="border-right: none;">
+                                    <div class="gantt-bar phase1" style="left: 16.66%; width: 8.33%;" title="WC-A first location">Pilot</div>
+                                </div>
+                            </div>
+
+                            <!-- PN532 Sourcing -->
+                            <div class="gantt-row">
+                                <div class="gantt-bar-container" style="border-right: none;">
+                                    <div class="gantt-bar phase2" style="left: 16.66%; width: 8.33%;" title="Card reader board procurement">Order</div>
+                                </div>
+                            </div>
+
+                            <!-- Double-Auth Flow -->
+                            <div class="gantt-row">
+                                <div class="gantt-bar-container" style="border-right: none;">
+                                    <div class="gantt-bar phase2" style="left: 24.99%; width: 18.66%;" title="PIN+Card dual authentication">Phase 2</div>
+                                </div>
+                            </div>
+
+                            <!-- Suite RLS Schema -->
+                            <div class="gantt-row">
+                                <div class="gantt-bar-container" style="border-right: none;">
+                                    <div class="gantt-bar phase3" style="left: 58.32%; width: 8.33%;" title="Multi-tenant RLS policies">Phase 3</div>
+                                </div>
+                            </div>
+
+                            <!-- Stripe Integration -->
+                            <div class="gantt-row">
+                                <div class="gantt-bar-container" style="border-right: none;">
+                                    <div class="gantt-bar phase4" style="left: 66.65%; width: 18.66%;" title="Webhook handler + signature verification">Phase 4</div>
+                                </div>
+                            </div>
+
+                            <!-- Moloni API -->
+                            <div class="gantt-row">
+                                <div class="gantt-bar-container" style="border-right: none;">
+                                    <div class="gantt-bar phase4" style="left: 74.98%; width: 8.33%;" title="Invoice generation + SAF-T export">Phase 4</div>
+                                </div>
+                            </div>
+
+                            <!-- Shelly Bridge -->
+                            <div class="gantt-row">
+                                <div class="gantt-bar-container" style="border-right: none;">
+                                    <div class="gantt-bar phase5" style="left: 83.31%; width: 8.33%;" title="Relay + gate integration">Phase 5</div>
+                                </div>
+                            </div>
+
+                            <!-- E2E Testing -->
+                            <div class="gantt-row">
+                                <div class="gantt-bar-container" style="border-right: none;">
+                                    <div class="gantt-bar phase5" style="left: 91.64%; width: 8.33%;" title="All 3 projects integrated">Testing</div>
+                                </div>
+                            </div>
+
+                            <!-- Production Deploy -->
+                            <div class="gantt-row">
+                                <div class="gantt-bar-container" style="border-right: none;">
+                                    <div class="gantt-bar milestone" style="left: 99%; width: 1%;" title="Go-live">✓</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase Details -->
+            <div class="section">
+                <h2>📍 Detalhe por Fase</h2>
+
+                <h3>Fase 1: MVP — Tuya Hub + PIN Pad (Semanas 1-2)</h3>
+                <div class="success-box">
+                    <strong>Deliverable:</strong> Backend FastAPI + SvelteKit PIN UI + First pilot location
+                </div>
+                <ul class="task-list">
+                    <li><strong class="critical">W1:</strong> Hardware sourcing (Tuya distribuidor), FastAPI skeleton, MQTT broker setup</li>
+                    <li><strong>W1:</strong> Keycap integration (Tuya API), PIN validation (4-12 digits), rate-limiting</li>
+                    <li><strong>W2:</strong> Unit tests (Jest/Pytest), integration tests (MQTT TLS handshake)</li>
+                    <li><strong>W2:</strong> Pilot #1 deploy (WC-A), field testing, gather feedback</li>
+                </ul>
+
+                <h3>Fase 2: Card Reader — NFC/RFID PN532 (Semanas 3-4)</h3>
+                <div class="warning-box">
+                    <strong>Dependency:</strong> PN532 board arrival (+3 dias após order W1)
+                </div>
+                <ul class="task-list">
+                    <li><strong>W3:</strong> PN532 driver integration, card UID parsing (protocol validation)</li>
+                    <li><strong>W3:</strong> Double-auth flow (PIN → Card → Relay actuate)</li>
+                    <li><strong>W4:</strong> Integration tests, e2e testing (Selenium PIN pad + card reader mock)</li>
+                    <li><strong>W4:</strong> Pilot #2 & #3 deployment (2 additional locations)</li>
+                </ul>
+
+                <h3>Fase 3: JFA_Suite Integration + RLS Auditoria (Semana 7)</h3>
+                <div class="warning-box">
+                    <strong>Critical Dependency:</strong> Suite RLS schema merge (coordenado com Suite lead architect)
+                </div>
+                <ul class="task-list">
+                    <li><strong>W7:</strong> access_control.input_devices table design (schema review)</li>
+                    <li><strong>W7:</strong> RLS policies (multi-tenant isolation, row-level access)</li>
+                    <li><strong>W7:</strong> API endpoints + validation, auditoria logging</li>
+                </ul>
+
+                <h3>Fase 4: JFA_AccessPay Payment Integration (Semanas 8-9)</h3>
+                <div class="warning-box">
+                    <strong>Dependency:</strong> Suite API stable (Phase 3 merged)
+                </div>
+                <ul class="task-list">
+                    <li><strong>W8:</strong> Stripe webhook handler (HMAC signature verification), event routing</li>
+                    <li><strong>W8:</strong> Local cache + retry logic (failover pre-auth stored-value)</li>
+                    <li><strong>W9:</strong> Moloni API integration (invoice generation, SAF-T export)</li>
+                    <li><strong>W9:</strong> Staging testing (100% coverage payment flow)</li>
+                </ul>
+
+                <h3>Fase 5: JFA_Remotes Gates + Production Hardening (Semanas 10-11)</h3>
+                <div class="success-box">
+                    <strong>Deliverable:</strong> Full stack production-ready (gates, remotes, monitoring)
+                </div>
+                <ul class="task-list">
+                    <li><strong>W10:</strong> Shelly relay + Tuya relay bridge, E2E testing (all 3 projects)</li>
+                    <li><strong>W10:</strong> Production hardening (structured logging, error monitoring, alerting)</li>
+                    <li><strong>W11:</strong> Deploy runbooks (dev/staging/prod checklists), ops docs</li>
+                    <li><strong>W11:</strong> Rollout procedure (blue-green deploy, failover tests)</li>
+                </ul>
+            </div>
+
+            <!-- Critical Path & Dependencies -->
+            <div class="section">
+                <h2>⚡ Critical Path & Dependencies</h2>
+
+                <h3>Critical Path (Longest Timeline)</h3>
+                <div class="warning-box">
+                    <strong>Week 1 (Hardware sourcing) → Week 2 (FastAPI ready) → Week 7 (Suite merge) → Week 9 (Payment tested) → Week 11 (Go-live)</strong><br>
+                    <strong>Duration:</strong> 11 weeks + 2 weeks contingency = 13 weeks aprox.
+                </div>
+
+                <h3>Inter-Phase Dependencies</h3>
+                <table>
+                    <tr>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Type</th>
+                        <th>Lead Time / Notes</th>
+                    </tr>
+                    <tr>
+                        <td><strong class="critical">Hardware Sourcing</strong> (W1)</td>
+                        <td>Phase 1 FastAPI (W1-W2)</td>
+                        <td>Hard dependency</td>
+                        <td>5-7 dias lead time (Tuya distribuidor EU). Mitigation: pre-order W0</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phase 1 Complete</strong> (W2)</td>
+                        <td>Phase 2 Card reader (W3)</td>
+                        <td>Soft dependency</td>
+                        <td>PN532 board arrival (+3 dias). Parallel dev possible</td>
+                    </tr>
+                    <tr>
+                        <td><strong class="critical">Phase 2 Complete</strong> (W4)</td>
+                        <td>Phase 3 Suite RLS (W7)</td>
+                        <td>Hard dependency (external)</td>
+                        <td>Suite architect review + merge (W5-W6). Risk: schema redesign = +2 semanas</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phase 3 Merge</strong> (W7)</td>
+                        <td>Phase 4 Stripe/Moloni (W8-W9)</td>
+                        <td>Hard dependency</td>
+                        <td>API endpoints stable. Test in staging (W8)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phase 4 Complete</strong> (W9)</td>
+                        <td>Phase 5 E2E testing (W10)</td>
+                        <td>Hard dependency</td>
+                        <td>Payment handler must pass 100% coverage before E2E</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phase 5 Testing</strong> (W10-W11)</td>
+                        <td>Production Deploy (W11+)</td>
+                        <td>Soft dependency</td>
+                        <td>Runbooks + ops training. Rollback ready</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Risk & Mitigation -->
+            <div class="section">
+                <h2>⚠️ Riscos Críticos do Caminho</h2>
+
+                <h3>1. Hardware Lead Time (W1)</h3>
+                <div class="warning-box">
+                    <strong>Risco:</strong> Tuya distribuidor delay → 2 semanas atraso timeline
+                    <br><strong>Impacto:</strong> Phase 1 start blocker
+                    <br><strong>Mitigation:</strong>
+                    <ul>
+                        <li>Pre-order W0 (antes da sessão PLANEAR)</li>
+                        <li>Backup distribuidor secundário (Farnell)</li>
+                        <li>Negotiate expedited shipping (€50 extra)</li>
+                    </ul>
+                </div>
+
+                <h3>2. Suite RLS Schema Complexity (W5-W6)</h3>
+                <div class="warning-box">
+                    <strong>Risco:</strong> Suite architect redesign → merge blocker, +2 semanas
+                    <br><strong>Impacto:</strong> Phase 3 start delay, cascading to Phase 4-5
+                    <br><strong>Mitigation:</strong>
+                    <ul>
+                        <li>Pair programming with Suite architect (W2 kickoff)</li>
+                        <li>Schema POC/review W2-W3 (antes de W7 merge)</li>
+                        <li>Contingency: local input_events table (if Suite schema blocked)</li>
+                    </ul>
+                </div>
+
+                <h3>3. Pilot #1 Feedback Loop (W2)</h3>
+                <div class="warning-box">
+                    <strong>Risco:</strong> WC-A rejeita PIN-only, demanda card-only or different UX
+                    <br><strong>Impacto:</strong> Phase 2 pivot, design change
+                    <br><strong>Mitigation:</strong>
+                    <ul>
+                        <li>User testing W1 (UI mockup feedback antes de deploy)</li>
+                        <li>Flexible PIN validation (4-8-12 digit options configurable)</li>
+                        <li>Quick pivot capability (feature flags)</li>
+                    </ul>
+                </div>
+
+                <h3>4. Payment Handler Complexity (W8-W9)</h3>
+                <div class="warning-box">
+                    <strong>Risco:</strong> Stripe webhook + Moloni API integration = testing overhead
+                    <br><strong>Impacto:</strong> E2E testing W10 delayed, risk of production bugs
+                    <br><strong>Mitigation:</strong>
+                    <ul>
+                        <li>Stripe test mode (W8 integration testing)</li>
+                        <li>Moloni sandbox API (W8 testing)</li>
+                        <li>100% unit + integration test coverage requirement</li>
+                        <li>Staging validation 3-5 dias antes W10</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Resource Allocation -->
+            <div class="section">
+                <h2>👥 Alocação de Recursos (11 Semanas)</h2>
+                <table>
+                    <tr>
+                        <th>Role</th>
+                        <th>Phase 1</th>
+                        <th>Phase 2</th>
+                        <th>Phase 3</th>
+                        <th>Phase 4</th>
+                        <th>Phase 5</th>
+                        <th>Total FTE-weeks</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Backend (FastAPI)</strong></td>
+                        <td>2 FTE</td>
+                        <td>1 FTE</td>
+                        <td>0.5 FTE</td>
+                        <td>1 FTE</td>
+                        <td>0.5 FTE</td>
+                        <td>5 FTE-weeks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Frontend (SvelteKit)</strong></td>
+                        <td>1.5 FTE</td>
+                        <td>0.5 FTE</td>
+                        <td>0 FTE</td>
+                        <td>0.5 FTE</td>
+                        <td>0 FTE</td>
+                        <td>2.5 FTE-weeks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>QA / Testing</strong></td>
+                        <td>1 FTE</td>
+                        <td>1 FTE</td>
+                        <td>0.5 FTE</td>
+                        <td>1.5 FTE</td>
+                        <td>1.5 FTE</td>
+                        <td>5.5 FTE-weeks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DevOps / Infra</strong></td>
+                        <td>0.5 FTE</td>
+                        <td>0 FTE</td>
+                        <td>0 FTE</td>
+                        <td>0.5 FTE</td>
+                        <td>1 FTE</td>
+                        <td>2 FTE-weeks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Project Lead / Coordinator</strong></td>
+                        <td>1 FTE</td>
+                        <td>1 FTE</td>
+                        <td>1 FTE</td>
+                        <td>1 FTE</td>
+                        <td>1 FTE</td>
+                        <td>5 FTE-weeks</td>
+                    </tr>
+                    <tr style="background: #f8f9ff; font-weight: 600;">
+                        <td colspan="6"><strong>Total Team Capacity</strong></td>
+                        <td><strong>20 FTE-weeks (4-person team, 11 weeks ideal)</strong></td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Timeline with Contingency -->
+            <div class="section">
+                <h2>📊 Timeline Comparison: Ideal vs Realistic</h2>
+                <table>
+                    <tr>
+                        <th>Scenario</th>
+                        <th>Duration</th>
+                        <th>Key Assumption</th>
+                        <th>Risk Level</th>
+                    </tr>
+                    <tr class="success">
+                        <td><strong>Ideal Path</strong></td>
+                        <td>11 weeks (2.5 months)</td>
+                        <td>Hardware arrives on-time, no Schema pivots, perfect execution</td>
+                        <td><span class="critical">High Risk (5%)</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Realistic Path (RECOMMENDED)</strong></td>
+                        <td><strong>13 weeks (3 months)</strong></td>
+                        <td>+1 week hardware contingency, +1 week testing/validation buffer</td>
+                        <td>Médium Risk (25%)</td>
+                    </tr>
+                    <tr style="background: #fef3c7;">
+                        <td><strong>Conservative Path</strong></td>
+                        <td>15 weeks (3.5 months)</td>
+                        <td>+2 weeks schema redesign, +2 weeks payment testing</td>
+                        <td>Low Risk (75%)</td>
+                    </tr>
+                </table>
+                <div class="success-box">
+                    <strong>Recomendação:</strong> Plan for 13 weeks (realistic), com contingency 15 weeks.
+                    Comece pelo "Pre-week 0" (pre-order hardware, architect kickoff).
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>JFA_Unify Cronograma</strong> • Generated: 2026-05-26 • BRIO Phase 3: PLANEAR</p>
+            <p>Confidential — Internal Use Only • Next: BRAUSTORM (4 variantes, 5 advisor roles)</p>
+        </div>
+    </div>
+
+    <script>
+        // Responsive Gantt on mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const ganttContainer = document.querySelector('.gantt-container');
+            if (window.innerWidth < 768) {
+                ganttContainer.style.overflowX = 'auto';
+                ganttContainer.style.maxWidth = '100%';
+            }
+        });
+    </script>
+</body>
+</html>
