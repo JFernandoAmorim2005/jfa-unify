@@ -133,8 +133,6 @@ class AccessControlService:
 
         if mode == "pin_and_card":
             pin_ok, _, pin_hash_used, _ = self._check_pin(request, device)
-            card_ok, _, _, _ = self._check_card(request, device), None, None, None
-            # Simplificação: verificar cartão separadamente
             card_granted, card_type, card_detail = self._check_card(request, device)
             if pin_ok and card_granted:
                 return True, ACCESS_TYPE_DOUBLE_AUTH_SUCCESS, pin_hash_used, "PIN e cartão verificados."

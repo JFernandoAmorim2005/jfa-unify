@@ -21,6 +21,10 @@ from unittest.mock import AsyncMock
 from app.services.access_crypto import hash_pin_for_device
 from app.services.mqtt_adapter import MQTTService, IMQTTAdapter
 
+# Capturar a implementação REAL de verify_hmac_token ANTES do patch global.
+# Testes unitários de auth.py precisam da função verdadeira (não do mock).
+from app.services.auth import verify_hmac_token as _REAL_VERIFY_HMAC_TOKEN
+
 
 def _make_client_with_auth(app, sample_tenant_id):
     """Wrapper que injeta header Authorization em todos os requests do TestClient."""
@@ -45,6 +49,12 @@ def pytest_configure(config):
     """Mocka verify_hmac_token ANTES de qualquer import de app."""
     patch('app.services.auth.verify_hmac_token',
            return_value={"tenant_id": "00000000-0000-0000-0000-000000000001"}).start()
+
+
+@pytest.fixture
+def real_verify_hmac_token():
+    """Expõe a implementação real de verify_hmac_token para testes unitários de auth."""
+    return _REAL_VERIFY_HMAC_TOKEN
 
 
 def _make_device(**kwargs) -> SimpleNamespace:
