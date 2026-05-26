@@ -18,7 +18,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.db.database import Base, set_tenant_context
-from app.models import Device, AccessLog, AuditLog
+from app.models import InputDevice, AccessLog
 
 
 @pytest.fixture(scope="session")
@@ -116,9 +116,9 @@ def sample_tenant_b() -> str:
 
 
 @pytest.fixture
-def sample_device_a(sample_tenant_a: str, db_superuser: Session) -> Device:
+def sample_device_a(sample_tenant_a: str, db_superuser: Session) -> InputDevice:
     """Device de tenant A."""
-    device = Device(
+    device = InputDevice(
         id=str(uuid.uuid4()),
         tenant_id=sample_tenant_a,
         device_code="DEVICE_A_001",
@@ -132,9 +132,9 @@ def sample_device_a(sample_tenant_a: str, db_superuser: Session) -> Device:
 
 
 @pytest.fixture
-def sample_device_b(sample_tenant_b: str, db_superuser: Session) -> Device:
+def sample_device_b(sample_tenant_b: str, db_superuser: Session) -> InputDevice:
     """Device de tenant B."""
-    device = Device(
+    device = InputDevice(
         id=str(uuid.uuid4()),
         tenant_id=sample_tenant_b,
         device_code="DEVICE_B_001",

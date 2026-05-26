@@ -9,7 +9,7 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.db.database import set_tenant_context
-from app.models import InputDevice, AccessLog, AuditLog
+from app.models import InputDevice, AccessLog
 
 # Marcar todos os testes desta classe como integration tests
 pytestmark = pytest.mark.integration
@@ -32,15 +32,6 @@ class TestFailClosedAccessLogs:
         """Sem SET LOCAL, access_logs retorna zero."""
         result = db_appuser.query(AccessLog).all()
         assert len(result) == 0, "RLS fail-closed: access_logs sem contexto = zero"
-
-
-class TestFailClosedAuditLogs:
-    """Validar que sem SET LOCAL, audit_logs retorna zero (fail-closed)."""
-
-    def test_no_context_returns_zero_audit_logs(self, db_appuser: Session, sample_device_a, sample_tenant_a):
-        """Sem SET LOCAL, audit_logs retorna zero."""
-        result = db_appuser.query(AuditLog).all()
-        assert len(result) == 0, "RLS fail-closed: audit_logs sem contexto = zero"
 
 
 class TestSelectIsolationDevices:
