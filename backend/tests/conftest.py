@@ -3,31 +3,48 @@ Fixtures pytest para testes do backend JFA Unify.
 
 Estratégia de isolamento:
   - Testes unitários (access_control, mqtt): mocks de sessão SQLAlchemy.
-  - Sem dependência de PostgreSQL ou SQLite em runtime — testes correm offline.
+  - SQLite em memória (TESTING=1) para testes HTTP.
   - Fixtures de dados usam SimpleNamespace para simular objectos ORM
     sem activar a instrumentação SQLAlchemy (que requer registry completo).
 
 Para testes de integração com PostgreSQL real, definir DATABASE_URL no ambiente
 e usar pytest-postgresql ou docker-compose separado.
 """
-import sys
 import uuid
 from types import SimpleNamespace
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
-# Mock database modules antes de qualquer import que dependa deles
-sys.modules['app.db'] = MagicMock()
-sys.modules['app.db.database'] = MagicMock()
-sys.modules['app.models'] = MagicMock()
-sys.modules['app.models.device'] = MagicMock()
-sys.modules['app.models.access_log'] = MagicMock()
+import pytest
+import pytest_asyncio
+from unittest.mock import AsyncMock
 
-import pytest  # noqa: E402
-import pytest_asyncio  # noqa: E402
-from unittest.mock import AsyncMock  # noqa: E402
+from app.services.access_crypto import hash_pin_for_device
+from app.services.mqtt_adapter import MQTTService, IMQTTAdapter
 
-from app.services.access_crypto import hash_pin_for_device  # noqa: E402
-from app.services.mqtt_adapter import MQTTService, IMQTTAdapter  # noqa: E402
+
+def _make_client_with_auth(app, sample_tenant_id):
+    """Wrapper que injeta header Authorization em todos os requests do TestClient."""
+    from fastapi.testclient import TestClient
+
+    client = TestClient(app, raise_server_exceptions=False)
+    original_request = client.request
+
+    def request_with_auth(*args, **kwargs):
+        if 'headers' not in kwargs or kwargs['headers'] is None:
+            kwargs['headers'] = {}
+        # Preservar headers existentes e adicionar Authorization
+        if 'Authorization' not in kwargs['headers']:
+            kwargs['headers']['Authorization'] = f'Bearer {sample_tenant_id}'
+        return original_request(*args, **kwargs)
+
+    client.request = request_with_auth
+    return client
+
+
+def pytest_configure(config):
+    """Mocka verify_hmac_token ANTES de qualquer import de app."""
+    patch('app.services.auth.verify_hmac_token',
+           return_value={"tenant_id": "00000000-0000-0000-0000-000000000001"}).start()
 
 
 def _make_device(**kwargs) -> SimpleNamespace:
@@ -138,6 +155,20 @@ def mock_mqtt_client() -> MagicMock:
     return mock
 
 
+# --- Mock do middleware de autenticação para testes ---
+
+@pytest.fixture(autouse=True)
+def mock_verify_hmac_token(monkeypatch):
+    """Mocka verify_hmac_token globalmente para todos os testes HTTP."""
+    def mock_verify(token):
+        return {"tenant_id": "00000000-0000-0000-0000-000000000001"}
+
+    monkeypatch.setattr(
+        'app.services.auth.verify_hmac_token',
+        mock_verify
+    )
+
+
 # --- Fixtures Async (pytest-asyncio) ---
 
 @pytest_asyncio.fixture
@@ -146,3 +177,52 @@ async def mqtt_service():
     mock_adapter = AsyncMock(spec=IMQTTAdapter)
     service = MQTTService(mock_adapter, session_factory=MagicMock)
     return service
+
+
+# --- Fixtures para testes HTTP (TestClient) ---
+
+@pytest.fixture
+def override_get_tenant_id_func(sample_tenant_id: uuid.UUID):
+    """Factory para override de get_tenant_id com tenant_id fixo."""
+    def _override():
+        return sample_tenant_id
+    return _override
+
+
+@pytest.fixture
+def override_get_db_tenant_func(sample_device_pin_only: SimpleNamespace, db: MagicMock):
+    """Factory para override de get_db_tenant com dispositivo mock."""
+    def _override():
+        mock_db = MagicMock()
+        mock_db.query.return_value.filter.return_value.all.return_value = [sample_device_pin_only]
+        mock_db.query.return_value.filter.return_value.first.return_value = sample_device_pin_only
+        mock_db.add.return_value = None
+        mock_db.commit.return_value = None
+        mock_db.refresh.return_value = None
+        yield mock_db
+    return _override
+
+
+@pytest.fixture
+def client_with_overrides(override_get_tenant_id_func, override_get_db_tenant_func, sample_tenant_id):
+    """TestClient com dependency_overrides e middleware mockado."""
+    from unittest.mock import patch
+    from app.main import app
+    from app.middleware.auth import get_tenant_id
+    from app.db.session import get_db_tenant
+
+    # Mockar verify_hmac_token para aceitar sempre e retornar tenant_id
+    with patch('app.middleware.auth.verify_hmac_token') as mock_verify:
+        mock_verify.return_value = str(sample_tenant_id)
+
+        # Aplicar overrides
+        app.dependency_overrides[get_tenant_id] = override_get_tenant_id_func
+        app.dependency_overrides[get_db_tenant] = override_get_db_tenant_func
+
+        # Usar helper que injeta headers de autenticação
+        client = _make_client_with_auth(app, sample_tenant_id)
+
+        yield client
+
+        # Limpar overrides após teste
+        app.dependency_overrides.clear()
