@@ -24,12 +24,11 @@ def mock_settings():
 
 
 @pytest.fixture(autouse=True)
-def inject_mock_settings(mock_settings, real_verify_hmac_token, monkeypatch):
-    """Injeta mock settings e restaura verify_hmac_token real (capturada antes do patch global)."""
-    # Restaurar a função REAL capturada em conftest.py antes do pytest_configure patch
+def inject_mock_settings(real_verify_hmac_token, monkeypatch):
+    """Restaura verify_hmac_token real (capturada antes do patch global)."""
+    # mock_settings é automaticamente injetado pelo conftest.py para todos os testes
+    # Restaurar a função REAL capturada em conftest.py antes do patch
     monkeypatch.setattr("app.services.auth.verify_hmac_token", real_verify_hmac_token)
-    monkeypatch.setattr("app.services.auth.settings", mock_settings)
-    return mock_settings
 
 
 class TestGenerateHmacToken:
@@ -113,12 +112,14 @@ class TestVerifyHmacToken:
         assert result["device_id"] == "device-1"
         assert "exp" in result
 
-    def test_verify_expired_token_returns_none(self, mock_settings):
+    def test_verify_expired_token_returns_none(self, mock_settings, monkeypatch):
         """verify_hmac_token com token expirado retorna None."""
         payload = {"tenant_id": "test"}
-        mock_settings.token_expiry_seconds = 100
 
-        # Gerar token com time=1000, expiração em 1100
+        # Garantir que settings é a instância mockada
+        monkeypatch.setattr("app.services.auth.settings", mock_settings)
+
+        # Gerar token com time=1000, expiração em 1100 (token_expiry_seconds=100 do mock)
         with patch("app.services.auth.time.time", return_value=1000):
             token = auth.generate_hmac_token(payload)
 
@@ -212,12 +213,19 @@ class TestHashPin:
         hash2 = auth.hash_pin("2222")
         assert hash1 != hash2
 
-    def test_hash_pin_uses_secret_key(self, mock_settings):
+    def test_hash_pin_uses_secret_key(self, mock_settings, monkeypatch):
         """Hash depende da SECRET_KEY."""
+        from unittest.mock import patch
         pin = "1234"
+
+        # Garantir que settings é a instância mockada
+        monkeypatch.setattr("app.services.auth.settings", mock_settings)
+
+        # Primeiro hash com secret-1
         with patch("app.services.auth.settings.secret_key", "secret-1"):
             hash1 = auth.hash_pin(pin)
 
+        # Segundo hash com secret-2
         with patch("app.services.auth.settings.secret_key", "secret-2"):
             hash2 = auth.hash_pin(pin)
 

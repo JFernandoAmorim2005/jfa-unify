@@ -8,7 +8,7 @@ Estratégia:
   - Edge cases: PIN vazio, caracteres especiais, Unicode, salts diferentes.
 """
 import os
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -19,12 +19,6 @@ from app.services.access_crypto import (
 )
 
 
-@pytest.fixture
-def mock_settings():
-    """Mock de settings com SECRET_KEY fixo para testes determinísticos."""
-    with patch("app.services.access_crypto.settings") as mock:
-        mock.secret_key = "test-secret-key-1234567890abcdef"
-        yield mock
 
 
 @pytest.fixture
@@ -66,16 +60,20 @@ class TestComputePINHash:
 
         assert hash1 != hash2
 
-    def test_uses_secret_key_in_hash(self, fixed_salt):
+    def test_uses_secret_key_in_hash(self, fixed_salt, mock_settings, monkeypatch):
         """Alteração de secret_key altera o hash."""
+        from unittest.mock import patch
         pin = "1234"
 
-        with patch("app.services.access_crypto.settings") as mock1:
-            mock1.secret_key = "secret-key-alpha"
+        # Garantir que settings é a instância mockada
+        monkeypatch.setattr("app.services.access_crypto.settings", mock_settings)
+
+        # Primeiro hash com secret-key-alpha
+        with patch("app.services.access_crypto.settings.secret_key", "secret-key-alpha"):
             hash_alpha = _compute_pin_hash(pin, fixed_salt)
 
-        with patch("app.services.access_crypto.settings") as mock2:
-            mock2.secret_key = "secret-key-beta"
+        # Segundo hash com secret-key-beta
+        with patch("app.services.access_crypto.settings.secret_key", "secret-key-beta"):
             hash_beta = _compute_pin_hash(pin, fixed_salt)
 
         assert hash_alpha != hash_beta
@@ -252,15 +250,18 @@ class TestCryptoIntegration:
 
     def test_salt_compromise_scenario(self, mock_settings):
         """Se salt for comprometido, PIN ainda é protegido por secret_key."""
+        from unittest.mock import patch
         device_salt = generate_pin_salt()
         pin = "1234"
-        pin_hash = hash_pin_for_device(pin, device_salt)
 
         # Conhecer o PIN (1234), o salt, MAS não a secret_key → não conseguir recriar hash
         # (Este teste ilustra a necessidade da secret_key na chave HMAC)
 
-        with patch("app.services.access_crypto.settings") as mock:
-            mock.secret_key = "wrong-secret-key-different"
+        # Primeiro hash com secret_key padrão do mock
+        pin_hash = hash_pin_for_device(pin, device_salt)
+
+        # Segundo hash com secret_key diferente
+        with patch("app.services.access_crypto.settings.secret_key", "wrong-secret-key-different"):
             wrong_secret_hash = hash_pin_for_device(pin, device_salt)
 
         assert wrong_secret_hash != pin_hash
