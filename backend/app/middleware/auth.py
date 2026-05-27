@@ -4,12 +4,13 @@ Middleware de autenticação e injecção de contexto de tenant.
 Extrai o tenant_id do token de autorização e define o contexto
 de sessão PostgreSQL para RLS antes de cada pedido.
 """
+import json
 import logging
 import uuid
 
-from fastapi import Request, HTTPException, status
+from fastapi import Request, status
 from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.responses import Response
+from starlette.responses import Response, JSONResponse
 
 from app.db.database import SessionLocal, set_tenant_context
 from app.services.auth import verify_hmac_token
@@ -37,33 +38,33 @@ class TenantAuthMiddleware(BaseHTTPMiddleware):
         # Extrair token do header
         auth_header = request.headers.get("Authorization", "")
         if not auth_header.startswith("Bearer "):
-            raise HTTPException(
+            return JSONResponse(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Token de autorização ausente ou inválido.",
+                content={"detail": "Token de autorização ausente ou inválido."},
             )
 
         token = auth_header.removeprefix("Bearer ").strip()
         payload = verify_hmac_token(token)
 
         if payload is None:
-            raise HTTPException(
+            return JSONResponse(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Token expirado ou inválido.",
+                content={"detail": "Token expirado ou inválido."},
             )
 
         tenant_id_str = payload.get("tenant_id")
         if not tenant_id_str:
-            raise HTTPException(
+            return JSONResponse(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Token sem tenant_id.",
+                content={"detail": "Token sem tenant_id."},
             )
 
         try:
             tenant_id = uuid.UUID(tenant_id_str)
         except ValueError:
-            raise HTTPException(
+            return JSONResponse(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="tenant_id inválido no token.",
+                content={"detail": "tenant_id inválido no token."},
             )
 
         # Injectar no estado do pedido para uso nos handlers
