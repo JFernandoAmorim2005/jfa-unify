@@ -167,9 +167,13 @@ def mock_mqtt_client() -> MagicMock:
 
 # --- Mock do middleware de autenticação para testes ---
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def mock_verify_hmac_token(monkeypatch):
-    """Mocka verify_hmac_token globalmente para todos os testes HTTP."""
+    """Mocka verify_hmac_token para testes HTTP que precisam de autenticação mockada.
+
+    Não é autouse para evitar conflito com testes unitários (test_auth.py)
+    que restauram a função real via inject_mock_settings.
+    """
     def mock_verify(token):
         return {"tenant_id": "00000000-0000-0000-0000-000000000001"}
 

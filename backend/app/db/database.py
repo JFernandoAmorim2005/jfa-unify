@@ -49,7 +49,7 @@ class Base(DeclarativeBase):
     pass
 
 
-def set_tenant_context(db_session, tenant_id: str) -> None:
+def set_tenant_context(db_session, tenant_id) -> None:
     """
     Define a variável de sessão PostgreSQL para Row-Level Security.
 
@@ -58,11 +58,19 @@ def set_tenant_context(db_session, tenant_id: str) -> None:
     O segundo argumento missing_ok=true faz a policy falhar fechada (zero linhas)
     em vez de lançar excepção quando a variável não está definida.
 
+    NOTA: SET LOCAL é um utility statement — PostgreSQL não aceita bind
+    parameters ($1) server-side neste contexto, independentemente do driver.
+    psycopg2 mascarava isso via substituição client-side, mas psycopg3 e
+    pg8000 falham correctamente. Usamos literal string com validação UUID
+    para prevenir SQL injection.
+
     Args:
         db_session: Sessão SQLAlchemy activa.
-        tenant_id:  UUID do tenant como string.
+        tenant_id:  UUID do tenant (str ou UUID object).
     """
+    import uuid as _uuid
+    tenant_id_str = str(tenant_id)
+    _uuid.UUID(tenant_id_str)
     db_session.execute(
-        text("SET LOCAL app.current_tenant_id = :tid"),
-        {"tid": tenant_id},
+        text(f"SET LOCAL app.current_tenant_id = '{tenant_id_str}'"),
     )

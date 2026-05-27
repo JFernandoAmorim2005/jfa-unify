@@ -4,6 +4,7 @@ Testes para middleware de autenticação e tenant context injection.
 Estratégia: Testar TenantAuthMiddleware.dispatch() com rotas públicas,
 tokens válidos/inválidos, tenant_id ausente/inválido, e dependency get_tenant_id().
 """
+import json
 import uuid
 from unittest.mock import MagicMock, AsyncMock, patch
 from types import SimpleNamespace
@@ -11,7 +12,7 @@ from types import SimpleNamespace
 import pytest
 from fastapi import Request, HTTPException, Depends
 from fastapi.testclient import TestClient
-from starlette.responses import Response
+from starlette.responses import Response, JSONResponse
 
 
 class TestTenantAuthMiddlewarePublicPaths:
@@ -99,11 +100,12 @@ class TestTenantAuthMiddlewareAuthorization:
 
         middleware = TenantAuthMiddleware(call_next)
 
-        with pytest.raises(HTTPException) as exc_info:
-            await middleware.dispatch(request, call_next)
+        result = await middleware.dispatch(request, call_next)
 
-        assert exc_info.value.status_code == 401
-        assert "ausente ou inválido" in exc_info.value.detail
+        assert isinstance(result, JSONResponse)
+        assert result.status_code == 401
+        body = json.loads(result.body)
+        assert "ausente ou inválido" in body["detail"]
 
     @pytest.mark.asyncio
     async def test_authorization_header_without_bearer_prefix_returns_401(self):
@@ -118,10 +120,10 @@ class TestTenantAuthMiddlewareAuthorization:
 
         middleware = TenantAuthMiddleware(call_next)
 
-        with pytest.raises(HTTPException) as exc_info:
-            await middleware.dispatch(request, call_next)
+        result = await middleware.dispatch(request, call_next)
 
-        assert exc_info.value.status_code == 401
+        assert isinstance(result, JSONResponse)
+        assert result.status_code == 401
 
     @pytest.mark.asyncio
     async def test_authorization_header_malformed_returns_401(self):
@@ -136,10 +138,10 @@ class TestTenantAuthMiddlewareAuthorization:
 
         middleware = TenantAuthMiddleware(call_next)
 
-        with pytest.raises(HTTPException) as exc_info:
-            await middleware.dispatch(request, call_next)
+        result = await middleware.dispatch(request, call_next)
 
-        assert exc_info.value.status_code == 401
+        assert isinstance(result, JSONResponse)
+        assert result.status_code == 401
 
 
 class TestTenantAuthMiddlewareTokenValidation:
@@ -159,11 +161,12 @@ class TestTenantAuthMiddlewareTokenValidation:
         middleware = TenantAuthMiddleware(call_next)
 
         with patch("app.middleware.auth.verify_hmac_token", return_value=None):
-            with pytest.raises(HTTPException) as exc_info:
-                await middleware.dispatch(request, call_next)
+            result = await middleware.dispatch(request, call_next)
 
-            assert exc_info.value.status_code == 401
-            assert "expirado ou inválido" in exc_info.value.detail
+            assert isinstance(result, JSONResponse)
+            assert result.status_code == 401
+            body = json.loads(result.body)
+            assert "expirado ou inválido" in body["detail"]
 
     @pytest.mark.asyncio
     async def test_token_missing_tenant_id_returns_403(self):
@@ -182,11 +185,12 @@ class TestTenantAuthMiddlewareTokenValidation:
         payload = {"user_id": "some-user"}
 
         with patch("app.middleware.auth.verify_hmac_token", return_value=payload):
-            with pytest.raises(HTTPException) as exc_info:
-                await middleware.dispatch(request, call_next)
+            result = await middleware.dispatch(request, call_next)
 
-            assert exc_info.value.status_code == 403
-            assert "sem tenant_id" in exc_info.value.detail
+            assert isinstance(result, JSONResponse)
+            assert result.status_code == 403
+            body = json.loads(result.body)
+            assert "sem tenant_id" in body["detail"]
 
     @pytest.mark.asyncio
     async def test_token_tenant_id_invalid_uuid_returns_403(self):
@@ -205,11 +209,12 @@ class TestTenantAuthMiddlewareTokenValidation:
         payload = {"tenant_id": "not-a-uuid"}
 
         with patch("app.middleware.auth.verify_hmac_token", return_value=payload):
-            with pytest.raises(HTTPException) as exc_info:
-                await middleware.dispatch(request, call_next)
+            result = await middleware.dispatch(request, call_next)
 
-            assert exc_info.value.status_code == 403
-            assert "inválido" in exc_info.value.detail
+            assert isinstance(result, JSONResponse)
+            assert result.status_code == 403
+            body = json.loads(result.body)
+            assert "inválido" in body["detail"]
 
 
 class TestTenantAuthMiddlewareSuccess:
@@ -418,10 +423,10 @@ class TestAuthErrorMessages:
 
         middleware = TenantAuthMiddleware(call_next)
 
-        with pytest.raises(HTTPException) as exc_info:
-            await middleware.dispatch(request, call_next)
+        result = await middleware.dispatch(request, call_next)
 
-        assert "ausente ou inválido" in exc_info.value.detail
+        body = json.loads(result.body)
+        assert "ausente ou inválido" in body["detail"]
 
     @pytest.mark.asyncio
     async def test_invalid_token_error_message_is_clear(self):
@@ -437,10 +442,10 @@ class TestAuthErrorMessages:
         middleware = TenantAuthMiddleware(call_next)
 
         with patch("app.middleware.auth.verify_hmac_token", return_value=None):
-            with pytest.raises(HTTPException) as exc_info:
-                await middleware.dispatch(request, call_next)
+            result = await middleware.dispatch(request, call_next)
 
-            assert "expirado ou inválido" in exc_info.value.detail
+            body = json.loads(result.body)
+            assert "expirado ou inválido" in body["detail"]
 
     @pytest.mark.asyncio
     async def test_missing_tenant_id_error_message_is_clear(self):
@@ -458,10 +463,10 @@ class TestAuthErrorMessages:
         payload = {}  # Sem tenant_id
 
         with patch("app.middleware.auth.verify_hmac_token", return_value=payload):
-            with pytest.raises(HTTPException) as exc_info:
-                await middleware.dispatch(request, call_next)
+            result = await middleware.dispatch(request, call_next)
 
-            assert "sem tenant_id" in exc_info.value.detail
+            body = json.loads(result.body)
+            assert "sem tenant_id" in body["detail"]
 
 
 class TestAuthTokenParsing:
