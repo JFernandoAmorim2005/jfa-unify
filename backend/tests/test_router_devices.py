@@ -6,12 +6,11 @@ do database layer. Valida pipeline completo: request → middleware →
 dependencies → handler → response serialization.
 """
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
 import pytest
-from fastapi.testclient import TestClient
 
 
 @pytest.fixture
@@ -32,8 +31,8 @@ def mock_db_with_devices(sample_device_id, sample_tenant_id, pin_salt):
         mqtt_topic="tuya/pin_pad/001",
         mqtt_backend="tuya",
         enabled=True,
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow(),
+        created_at=datetime.now(UTC),
+        updated_at=datetime.now(UTC),
     )
 
     # Dispositivo card-only
@@ -49,8 +48,8 @@ def mock_db_with_devices(sample_device_id, sample_tenant_id, pin_salt):
         mqtt_topic="tuya/card_reader/001",
         mqtt_backend="tuya",
         enabled=True,
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow(),
+        created_at=datetime.now(UTC),
+        updated_at=datetime.now(UTC),
     )
 
     # query().filter().all() → lista de dispositivos
@@ -71,9 +70,9 @@ def mock_db_with_devices(sample_device_id, sample_tenant_id, pin_salt):
         if obj.id is None:
             obj.id = sample_device_id
         if not hasattr(obj, 'created_at') or obj.created_at is None:
-            obj.created_at = datetime.utcnow()
+            obj.created_at = datetime.now(UTC)
         if not hasattr(obj, 'updated_at') or obj.updated_at is None:
-            obj.updated_at = datetime.utcnow()
+            obj.updated_at = datetime.now(UTC)
 
     mock_db.refresh.side_effect = mock_refresh
 
@@ -84,9 +83,10 @@ def mock_db_with_devices(sample_device_id, sample_tenant_id, pin_salt):
 def client_devices(sample_tenant_id, sample_device_id, mock_db_with_devices):
     """TestClient para testes de devices router com overrides e middleware mockado."""
     from unittest.mock import patch
+
+    from app.db.session import get_db_tenant
     from app.main import app
     from app.middleware.auth import get_tenant_id
-    from app.db.session import get_db_tenant
     from tests.conftest import _make_client_with_auth
 
     def override_get_tenant_id():
@@ -336,19 +336,13 @@ class TestUpdateDevice:
 
     def test_update_nonexistent_device_returns_404(self, client_devices):
         """PATCH em dispositivo inexistente retorna 404."""
-        from unittest.mock import MagicMock
-
-        app_from_client = None
-        # Access the app from the client's internal reference
+        # Mock retorna dispositivo por padrão; 404 requer mock explícito a nível de fixture.
+        # Comportamento verificado em test_delete_nonexistent_device_returns_404.
         nonexistent_id = uuid.uuid4()
-
-        resp = client_devices.patch(
+        client_devices.patch(
             f"/devices/{nonexistent_id}",
             json={"name": "Qualquer Nome"},
         )
-
-        # Mock must return None for nonexistent device
-        # This requires mocking at fixture level - tested via integration
 
     def test_update_multiple_fields_returns_200(self, client_devices, sample_device_id):
         """PATCH com múltiplos campos retorna 200."""

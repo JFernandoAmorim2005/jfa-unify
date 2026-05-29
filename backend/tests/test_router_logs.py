@@ -5,11 +5,10 @@ Estratégia: Validar GET /logs/ com filtros de dispositivo,
 paginação e resposta de AccessLogRead.
 """
 import uuid
-from datetime import datetime, timedelta
+from datetime import UTC, datetime
 from types import SimpleNamespace
 
 import pytest
-from fastapi.testclient import TestClient
 
 
 def _make_access_log(**kwargs) -> SimpleNamespace:
@@ -18,7 +17,7 @@ def _make_access_log(**kwargs) -> SimpleNamespace:
         id=uuid.uuid4(),
         tenant_id=uuid.uuid4(),
         device_id=uuid.uuid4(),
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(UTC),
         access_type="pin_success",
         card_uid=None,
         pin_hash="hash_pin_xxx",
@@ -67,9 +66,10 @@ def mock_db_with_logs(sample_tenant_id, sample_device_id):
 def client_logs(sample_tenant_id, mock_db_with_logs):
     """TestClient para testes de logs router com overrides e middleware mockado."""
     from unittest.mock import patch
+
+    from app.db.session import get_db_tenant
     from app.main import app
     from app.middleware.auth import get_tenant_id
-    from app.db.session import get_db_tenant
     from tests.conftest import _make_client_with_auth
 
     def override_get_tenant_id():
