@@ -1,0 +1,25 @@
+# Secrets — nunca versionar
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+dist/
+*.egg-info/
+
+# Testing / coverage
+.pytest_cache/
+.ruff_cache/
+htmlcov/
+coverage.html/
+.hypothesis/
+.coverage
+
+# IDE
+.vscode/
+.idea/
