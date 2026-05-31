@@ -26,6 +26,29 @@ from app.services.mqtt_adapter import MQTTService, IMQTTAdapter
 from app.services.auth import verify_hmac_token as _REAL_VERIFY_HMAC_TOKEN
 
 
+@pytest.fixture
+def mock_settings(monkeypatch):
+    """Mock de settings com SECRET_KEY e token_expiry_seconds, com patch de auth.settings.
+
+    Definida no conftest (escopo partilhado) para que test_auth.py E
+    test_access_crypto.py a vejam. O refactor "Phase G" (18d7588) deixou-a
+    só em test_auth.py (escopo local) → test_access_crypto dava
+    "fixture 'mock_settings' not found".
+
+    Faz monkeypatch de app.services.auth.settings para que generate_hmac_token
+    use estes valores (token_expiry_seconds=100) — sem o patch, os testes que
+    não o fazem manualmente (test_generate_token_includes_exp) usavam o settings
+    real e a assertion contra mock.token_expiry_seconds falhava.
+    """
+    settings = MagicMock()
+    settings.secret_key = "test-secret-key-very-secure"
+    # 100s: test_verify_expired_token_returns_none documenta e depende deste valor
+    # (gera em t=1000 → exp=1100, verifica em t=1200 → expirado).
+    settings.token_expiry_seconds = 100
+    monkeypatch.setattr("app.services.auth.settings", settings, raising=False)
+    return settings
+
+
 def _make_client_with_auth(app, sample_tenant_id):
     """Wrapper que injeta header Authorization em todos os requests do TestClient."""
     from fastapi.testclient import TestClient
