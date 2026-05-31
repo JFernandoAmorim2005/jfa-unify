@@ -1,0 +1,10 @@
+# Dependências adicionais para testes de integração (RLS, PostgreSQL real).
+# Instalar: pip install -r requirements-test.txt
+#
+# NOTA: pg8000 é um driver PostgreSQL pure-Python que não requer libpq
+# nem pg_config instalados no sistema. Necessário para os testes de
+# integração em ambientes sem PostgreSQL client (e.g., Windows sem PG).
+
+-r requirements.txt
+pg8000>=1.31.0
+pytest-cov>=5  # o CI corre pytest --cov=app — necessário para o coverage report
