@@ -6,6 +6,8 @@ Row-Level Security (RLS):
   mas expõe o padrão tenant_id e o helper set_tenant_context() para activar
   a variável de sessão PostgreSQL `app.current_tenant_id`.
 """
+import os as _os
+
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
@@ -16,7 +18,6 @@ settings = get_settings()
 # Usar postgresql+psycopg2 para produção; fallback para sqlite em modo de teste.
 # A variável TESTING=1 no ambiente substitui a URL por SQLite em memória
 # (útil para testes locais sem psycopg2 instalado).
-import os as _os
 _db_url = (
     "sqlite:///:memory:"
     if _os.environ.get("TESTING") == "1"

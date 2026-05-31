@@ -10,7 +10,7 @@ Estratégia:
 """
 import uuid
 from types import SimpleNamespace
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -549,7 +549,7 @@ class TestAccessControlEdgeCases:
             card_uid=None,
         )
 
-        result = access_control_service.validate(
+        access_control_service.validate(
             request=request,
             tenant_id=different_tenant,
         )

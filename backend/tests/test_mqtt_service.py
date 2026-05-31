@@ -2,11 +2,11 @@
 Testes unitários para TuyaMqttClient e interface MqttClient.
 Usa mocks — sem broker MQTT real.
 """
-from unittest.mock import MagicMock, patch, call
+from unittest.mock import MagicMock, patch
 import pytest
 
 from app.services.mqtt_service import MqttClient
-from app.services.tuya_mqtt import TuyaMqttClient, TUYA_TOPIC_STATUS, TUYA_TOPIC_COMMAND
+from app.services.tuya_mqtt import TuyaMqttClient
 
 
 # --- Implementação mínima para testar a classe abstracta ---
@@ -120,7 +120,8 @@ class TestTuyaMqttClient:
     def test_handle_message_chama_callback(self, tuya_client):
         """Mensagem recebida deve invocar o callback registado."""
         received = []
-        callback = lambda t, p: received.append((t, p))
+        def callback(t, p):
+            return received.append((t, p))
         tuya_client._subscriptions["tuya/thing/dev1/status"] = callback
 
         msg = MagicMock()

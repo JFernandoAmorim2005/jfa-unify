@@ -7,8 +7,6 @@ Estratégia:
   - Validação de salt generation (32 bytes, aleatório).
   - Edge cases: PIN vazio, caracteres especiais, Unicode, salts diferentes.
 """
-import os
-from unittest.mock import MagicMock
 
 import pytest
 

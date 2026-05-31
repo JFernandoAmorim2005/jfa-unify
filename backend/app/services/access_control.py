@@ -7,16 +7,18 @@ import logging
 import uuid
 from datetime import datetime, timezone
 
-def _utcnow() -> datetime:
-    """Retorna hora UTC actual (compatível com Python 3.12+)."""
-    return datetime.now(timezone.utc).replace(tzinfo=None)
-
 from sqlalchemy.orm import Session
 
 from app.models.device import InputDevice
 from app.models.access_log import AccessLog
 from app.schemas.access_event import AccessValidateRequest, AccessValidateResponse
 from app.services.access_crypto import _compute_pin_hash
+
+
+def _utcnow() -> datetime:
+    """Retorna hora UTC actual (compatível com Python 3.12+)."""
+    return datetime.now(timezone.utc).replace(tzinfo=None)
+
 
 logger = logging.getLogger(__name__)
 
@@ -150,17 +152,9 @@ class AccessControlService:
             return False, ACCESS_TYPE_CONFIG_ERROR, None, "PIN não configurado."
 
         computed_hash = _compute_pin_hash(request.pin, device.pin_salt)
-        # Nota: o hash armazenado está no campo card_uids ou numa tabela separada.
-        # Para MVP: comparar com hash armazenado em memória (ver DeviceCreate).
-        # Em produção: hash verificado via bcrypt/argon2 com pin_salt.
-        # Aqui verificamos o hash derivado do PIN usando HMAC com o salt do device.
-        success = hmac.compare_digest(
-            computed_hash,
-            _compute_pin_hash(request.pin, device.pin_salt),
-        )
-        # O hash computado é sempre igual ao do próprio PIN — precisamos armazenar
-        # o hash esperado. Para MVP usamos a SECRET_KEY + pin_salt como verificação.
-        # O hash "armazenado" é gerado na criação e guardado em card_uids["__pin__"].
+        # O hash esperado é gerado na criação do device e guardado em
+        # card_uids["__pin__"]; a verificação real compara computed_hash com esse
+        # valor armazenado (ver `verified` abaixo) usando hmac.compare_digest.
         stored_pin_hash = device.card_uids.get("__pin__") if device.card_uids else None
         if not stored_pin_hash:
             return False, ACCESS_TYPE_CONFIG_ERROR, None, "Hash do PIN não configurado."

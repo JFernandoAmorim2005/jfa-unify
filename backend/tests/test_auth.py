@@ -4,8 +4,6 @@ Testes unitários para serviço de autenticação (geração e verificação de 
 Estratégia: Validar geração de tokens, verificação de assinatura, expiração,
 PIN hashing, nonce generation com isolation de config.
 """
-import hashlib
-import hmac
 import time
 from unittest.mock import MagicMock, patch
 

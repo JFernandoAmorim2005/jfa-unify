@@ -10,8 +10,7 @@ from unittest.mock import MagicMock, AsyncMock, patch
 from types import SimpleNamespace
 
 import pytest
-from fastapi import Request, HTTPException, Depends
-from fastapi.testclient import TestClient
+from fastapi import Request, HTTPException
 from starlette.responses import Response, JSONResponse
 
 
@@ -47,7 +46,7 @@ class TestTenantAuthMiddlewarePublicPaths:
         call_next = AsyncMock(return_value=Response("OK"))
 
         middleware = TenantAuthMiddleware(call_next)
-        result = await middleware.dispatch(request, call_next)
+        await middleware.dispatch(request, call_next)
 
         assert call_next.called
 
@@ -63,7 +62,7 @@ class TestTenantAuthMiddlewarePublicPaths:
         call_next = AsyncMock(return_value=Response("OK"))
 
         middleware = TenantAuthMiddleware(call_next)
-        result = await middleware.dispatch(request, call_next)
+        await middleware.dispatch(request, call_next)
 
         assert call_next.called
 
@@ -79,7 +78,7 @@ class TestTenantAuthMiddlewarePublicPaths:
         call_next = AsyncMock(return_value=Response("OK"))
 
         middleware = TenantAuthMiddleware(call_next)
-        result = await middleware.dispatch(request, call_next)
+        await middleware.dispatch(request, call_next)
 
         assert call_next.called
 
@@ -266,7 +265,7 @@ class TestTenantAuthMiddlewareSuccess:
         payload = {"tenant_id": sample_tenant_id}
 
         with patch("app.middleware.auth.verify_hmac_token", return_value=payload):
-            result = await middleware.dispatch(request, call_next)
+            await middleware.dispatch(request, call_next)
 
             assert call_next.called
 
@@ -290,7 +289,7 @@ class TestTenantAuthMiddlewareSuccess:
 
         with patch("app.middleware.auth.verify_hmac_token", return_value=payload):
             with patch("app.middleware.auth.logger") as mock_logger:
-                result = await middleware.dispatch(request, call_next)
+                await middleware.dispatch(request, call_next)
 
                 # debug() deve ter sido chamado
                 assert mock_logger.debug.called
@@ -493,7 +492,7 @@ class TestAuthTokenParsing:
         with patch("app.middleware.auth.verify_hmac_token") as mock_verify:
             mock_verify.return_value = payload
 
-            result = await middleware.dispatch(request, call_next)
+            await middleware.dispatch(request, call_next)
 
             # verify_hmac_token deve ter sido chamado com o token extraído
             mock_verify.assert_called_once_with("mytoken123")
@@ -519,7 +518,7 @@ class TestAuthTokenParsing:
         with patch("app.middleware.auth.verify_hmac_token") as mock_verify:
             mock_verify.return_value = payload
 
-            result = await middleware.dispatch(request, call_next)
+            await middleware.dispatch(request, call_next)
 
             # Token deve ser normalizado (espaços removidos)
             mock_verify.assert_called_once_with("mytoken123")

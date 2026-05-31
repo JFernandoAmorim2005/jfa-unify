@@ -12,8 +12,6 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
-from app.db.database import set_tenant_context
-from app.models import InputDevice, Tenant
 from app.services.auth import generate_hmac_token
 
 pytestmark = pytest.mark.integration
