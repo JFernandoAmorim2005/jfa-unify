@@ -4,7 +4,6 @@ Segue o esquema de tópicos proprietário do hub Tuya.
 """
 import json
 import logging
-from typing import Callable
 
 import paho.mqtt.client as mqtt_paho
 

@@ -4,23 +4,12 @@ Testes unitários para serviço de autenticação (geração e verificação de 
 Estratégia: Validar geração de tokens, verificação de assinatura, expiração,
 PIN hashing, nonce generation com isolation de config.
 """
-import hashlib
-import hmac
 import time
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
 from app.services import auth
-
-
-@pytest.fixture
-def mock_settings():
-    """Mock de settings com SECRET_KEY e token_expiry_seconds."""
-    settings = MagicMock()
-    settings.secret_key = "test-secret-key-very-secure"
-    settings.token_expiry_seconds = 3600
-    return settings
 
 
 @pytest.fixture(autouse=True)

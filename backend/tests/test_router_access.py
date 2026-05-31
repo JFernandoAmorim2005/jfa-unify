@@ -6,10 +6,9 @@ incluindo cenários de sucesso e falha.
 """
 import uuid
 from types import SimpleNamespace
-from unittest.mock import MagicMock, AsyncMock
+from unittest.mock import MagicMock
 
 import pytest
-from fastapi.testclient import TestClient
 
 
 @pytest.fixture

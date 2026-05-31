@@ -6,7 +6,6 @@ isolamento SELECT/INSERT/UPDATE/DELETE, e context-switching na mesma sessão.
 """
 import uuid
 import pytest
-from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.db.database import set_tenant_context
@@ -121,7 +120,7 @@ class TestUpdateIsolation:
         """UPDATE alien não levanta erro, mas afecta 0 linhas (RLS bloqueia silenciosamente)."""
         set_tenant_context(db_appuser, sample_tenant_a)
         # Tentar actualizar device de B enquanto contexto é A
-        stmt = db_appuser.query(InputDevice).filter_by(id=sample_device_b.id).update({"name": "Hacked B"})
+        db_appuser.query(InputDevice).filter_by(id=sample_device_b.id).update({"name": "Hacked B"})
         db_appuser.commit()
         # RLS bloqueia SELECT implícito, por isso UPDATE afecta 0 linhas
 

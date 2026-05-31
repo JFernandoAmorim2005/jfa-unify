@@ -23,7 +23,7 @@ try:
 except ImportError:
     mqtt = None
 
-from app.services.mqtt_adapter import MQTTService, IMQTTAdapter
+from app.services.mqtt_adapter import IMQTTAdapter
 
 
 MQTT_BROKER_HOST = "localhost"
@@ -60,7 +60,7 @@ def mqtt_client_direct():
     try:
         if client.is_connected():
             client.disconnect()
-    except:
+    except Exception:
         pass
 
 

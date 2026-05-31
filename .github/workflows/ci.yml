@@ -55,16 +55,21 @@ jobs:
           cd backend
           mypy app --ignore-missing-imports 2>/dev/null || true
 
-      - name: Run pytest with coverage
+      - name: Run pytest with coverage + gate
+        # -m "not integration": exclui os testes RLS que exigem Postgres real com
+        #   roles app_user + políticas RLS (TESTING=1 usa SQLite — RLS não existe).
+        #   Esses correm num job de integração dedicado (docker-compose.test.yml).
+        # --cov-fail-under=50: baseline unit medido ~55%; gate a 50 (margem ~5pp).
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/jfa_test
           TESTING: '1'
         run: |
           cd backend
-          pytest tests/ \
+          pytest tests/ -m "not integration" \
             --cov=app \
             --cov-report=xml \
             --cov-report=term-missing \
+            --cov-fail-under=50 \
             --junitxml=test-results.xml \
             -v
 

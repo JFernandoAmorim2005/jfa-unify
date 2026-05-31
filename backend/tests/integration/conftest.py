@@ -17,8 +17,7 @@ from alembic.config import Config as AlembicConfig
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.db.database import Base, set_tenant_context
-from app.models import InputDevice, AccessLog, Tenant
+from app.models import InputDevice, Tenant
 
 
 @pytest.fixture(scope="session")

@@ -8,3 +8,4 @@
 -r requirements.txt
 pg8000>=1.31.0
 pytest-cov>=5  # o CI corre pytest --cov=app — necessário para o coverage report
+ruff>=0.8      # o CI corre "ruff check ." no step de lint (sem isto: exit 127)

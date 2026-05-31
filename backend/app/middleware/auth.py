@@ -4,7 +4,6 @@ Middleware de autenticação e injecção de contexto de tenant.
 Extrai o tenant_id do token de autorização e define o contexto
 de sessão PostgreSQL para RLS antes de cada pedido.
 """
-import json
 import logging
 import uuid
 
@@ -12,7 +11,6 @@ from fastapi import HTTPException, Request, status
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response, JSONResponse
 
-from app.db.database import SessionLocal, set_tenant_context
 from app.services.auth import verify_hmac_token
 
 logger = logging.getLogger(__name__)

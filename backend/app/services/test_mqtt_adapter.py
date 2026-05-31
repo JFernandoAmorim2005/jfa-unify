@@ -8,7 +8,7 @@ import sqlite3
 import sys
 import tempfile
 from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, patch, MagicMock
+from unittest.mock import AsyncMock, patch, MagicMock
 
 import pytest
 import pytest_asyncio
@@ -20,7 +20,7 @@ sys.modules['app.models'] = MagicMock()
 sys.modules['app.models.access_log'] = MagicMock()
 sys.modules['app.models.device'] = MagicMock()
 
-from app.services.mqtt_adapter import (
+from app.services.mqtt_adapter import (  # noqa: E402 — import após mock de sys.modules (intencional)
     TuyaAdapterAsync,
     ESP32AdapterAsync,
     MQTTService,
