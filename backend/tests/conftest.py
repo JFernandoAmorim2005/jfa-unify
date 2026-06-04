@@ -10,6 +10,9 @@ Estratégia de isolamento:
 Para testes de integração com PostgreSQL real, definir DATABASE_URL no ambiente
 e usar pytest-postgresql ou docker-compose separado.
 """
+import os as _os
+_os.environ.setdefault("TESTING", "1")  # SQLite em memória; evita import psycopg2
+
 import uuid
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
@@ -72,6 +75,16 @@ def pytest_configure(config):
     """Mocka verify_hmac_token ANTES de qualquer import de app."""
     patch('app.services.auth.verify_hmac_token',
            return_value={"tenant_id": "00000000-0000-0000-0000-000000000001"}).start()
+
+
+@pytest.fixture
+def mock_settings():
+    """Settings mock com secret_key fixo para testes de cripto determinísticos."""
+    return SimpleNamespace(
+        secret_key="test-secret-key-brio-jfa-unify-32c",
+        token_expiry_seconds=100,
+        hmac_algorithm="sha256",
+    )
 
 
 @pytest.fixture
