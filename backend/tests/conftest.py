@@ -78,16 +78,6 @@ def pytest_configure(config):
 
 
 @pytest.fixture
-def mock_settings():
-    """Settings mock com secret_key fixo para testes de cripto determinísticos."""
-    return SimpleNamespace(
-        secret_key="test-secret-key-brio-jfa-unify-32c",
-        token_expiry_seconds=100,
-        hmac_algorithm="sha256",
-    )
-
-
-@pytest.fixture
 def real_verify_hmac_token():
     """Expõe a implementação real de verify_hmac_token para testes unitários de auth."""
     return _REAL_VERIFY_HMAC_TOKEN
