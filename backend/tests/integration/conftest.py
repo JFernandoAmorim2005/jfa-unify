@@ -43,6 +43,18 @@ def postgres_appuser_url() -> str:
 @pytest.fixture(scope="session", autouse=True)
 def setup_database(postgres_url: str) -> Generator[None, None, None]:
     """Setup: executa Alembic auto-migrate via Python API."""
+    # Skip se PostgreSQL não disponível (e.g. run local com TESTING=1/SQLite).
+    # Para activar: docker compose -f docker-compose.test.yml up -d --wait
+    try:
+        from sqlalchemy import create_engine as _ce, text as _t
+        _probe = _ce(postgres_url, connect_args={"connect_timeout": 2})
+        with _probe.connect() as _c:
+            _c.execute(_t("SELECT 1"))
+        _probe.dispose()
+    except Exception:
+        pytest.skip("PostgreSQL não disponível — usar docker-compose.test.yml para testes de integração")
+        return
+
     # Definir DATABASE_URL no ambiente para que env.py o use.
     os.environ["DATABASE_URL"] = postgres_url
 

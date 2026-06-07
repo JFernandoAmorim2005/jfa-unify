@@ -20,6 +20,17 @@ class AccessValidateRequest(BaseModel):
         None, max_length=255,
         description="UID do cartão RFID/NFC para verificação"
     )
+    # Integração opcional com JFA_Suite — token pré-pago para verificação de saldo.
+    # Apenas relevante quando SUITE_INTEGRATION_ENABLED=true.
+    suite_token_id: uuid.UUID | None = Field(
+        None,
+        description="UUID do token pré-pago em JFA_Suite (opcional — verificação de saldo)",
+    )
+    # UUID do access_point em JFA_Suite (necessário se suite_token_id presente).
+    suite_access_point_id: uuid.UUID | None = Field(
+        None,
+        description="UUID do access_point em JFA_Suite (usado com suite_token_id)",
+    )
 
 
 class AccessValidateResponse(BaseModel):

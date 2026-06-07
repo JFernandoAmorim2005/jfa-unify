@@ -1,0 +1,32 @@
+# docker-compose.test.yml — PostgreSQL efémero para testes de integração RLS.
+#
+# Uso:
+#   docker compose -f docker-compose.test.yml up -d --wait
+#   pytest -m integration
+#   docker compose -f docker-compose.test.yml down
+#
+# NOTA IMPORTANTE — Superuser vs BYPASSRLS:
+#   POSTGRES_USER (jfaunify_test) é criado como superuser pelo entrypoint oficial.
+#   Superusers têm BYPASSRLS implícito, o que anularia os testes RLS.
+#   O init script (initdb/) cria um role 'app_user' sem BYPASSRLS e concede-lhe
+#   acesso total às tabelas. Os testes de integração usam este role via
+#   DATABASE_URL_TEST para garantir que as políticas RLS são realmente aplicadas.
+
+services:
+  postgres-test:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: jfaunify_test
+      POSTGRES_PASSWORD: testpassword
+      POSTGRES_DB: jfaunify_test_db
+    ports:
+      - "5433:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    volumes:
+      - ./backend/tests/integration/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jfaunify_test -d jfaunify_test_db"]
+      interval: 2s
+      timeout: 3s
+      retries: 15

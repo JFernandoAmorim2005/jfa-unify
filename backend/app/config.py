@@ -37,6 +37,16 @@ class Settings(BaseSettings):
     tuya_access_id: str = ""
     tuya_access_secret: str = ""
 
+    # --- Integração JFA_Suite ---
+    # Flag de activação: False por omissão para não quebrar testes existentes.
+    suite_integration_enabled: bool = False
+    # URL base da API JFA_Suite (payaccess module, porta 8040 por omissão).
+    suite_base_url: str = "http://localhost:8040"
+    # Token HMAC para autenticação no JFA_Suite API.
+    suite_api_token: str = ""
+    # Tempo limite (segundos) para chamadas HTTP ao JFA_Suite.
+    suite_http_timeout: float = 3.0
+
     # --- Ambiente ---
     environment: str = "development"
     log_level: str = "DEBUG"
