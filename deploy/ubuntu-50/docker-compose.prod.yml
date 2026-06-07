@@ -1,0 +1,102 @@
+# Deploy produção Ubuntu .50 — porta 8043
+# name: jfa-unify — evita conflito com outros projectos (jfa-portal, jfa-accesspay, ubuntu-*)
+# Isolamento total: PostgreSQL + Redis + Mosquitto próprios (RLS requer Postgres dedicado).
+name: jfa-unify
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: unify-postgres
+    restart: unless-stopped
+    env_file:
+      - /opt/jfa-unify/.env
+    volumes:
+      - /opt/jfa-unify/postgres/data:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+    networks:
+      - unify-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jfaunify -d jfaunify"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  redis:
+    image: redis:7-alpine
+    container_name: unify-redis
+    restart: unless-stopped
+    networks:
+      - unify-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: unify-mqtt
+    restart: unless-stopped
+    # Fase 1: sem ports públicos — acessível apenas dentro de unify-net.
+    expose:
+      - "1883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - /opt/jfa-unify/mosquitto/data:/mosquitto/data
+    networks:
+      - unify-net
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+  api:
+    image: jfa-unify:prod
+    build:
+      context: ../../
+      dockerfile: deploy/Dockerfile
+    container_name: jfa-unify
+    restart: unless-stopped
+    ports:
+      # Loopback-only: Cloudflared (tunnel a7f96188) aponta para localhost:8043
+      - "127.0.0.1:8043:8000"
+    env_file:
+      - /opt/jfa-unify/.env
+    environment:
+      - ENVIRONMENT=production
+      - LOG_LEVEL=INFO
+    networks:
+      - unify-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mosquitto:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 8s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+networks:
+  unify-net:
+    driver: bridge
