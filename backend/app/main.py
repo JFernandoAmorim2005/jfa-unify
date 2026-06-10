@@ -3,6 +3,7 @@ Ponto de entrada da aplicação FastAPI — JFA Unify API.
 Inicializa routers, middleware, MQTT e tratamento de erros.
 """
 import logging
+import uuid
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
@@ -41,7 +42,7 @@ async def lifespan(app: FastAPI):
             logger.info("Inicializando ESP32AdapterAsync")
             mqtt_adapter = ESP32AdapterAsync(
                 broker_url=f"mqtt://{settings.mqtt_broker}:{settings.mqtt_port}",
-                client_id=settings.mqtt_client_id,
+                client_id=f"{settings.mqtt_client_id}-{uuid.uuid4().hex[:8]}",
                 ble_fallback_enabled=settings.mqtt_ble_fallback_enabled,
                 local_cache_path=settings.mqtt_local_cache_path,
             )
@@ -49,7 +50,7 @@ async def lifespan(app: FastAPI):
             logger.info("Inicializando TuyaAdapterAsync")
             mqtt_adapter = TuyaAdapterAsync(
                 broker_url=f"mqtt://{settings.mqtt_broker}:{settings.mqtt_port}",
-                client_id=settings.mqtt_client_id,
+                client_id=f"{settings.mqtt_client_id}-{uuid.uuid4().hex[:8]}",
                 username=settings.mqtt_username,
                 password=settings.mqtt_password,
             )

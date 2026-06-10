@@ -117,6 +117,7 @@ class TuyaAdapterAsync(IMQTTAdapter):
 
         try:
             self._client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, self.client_id)
+            self._client.reconnect_delay_set(min_delay=1, max_delay=30)
             self._client.on_connect = on_connect
             self._client.on_disconnect = on_disconnect
             self._client.on_message = on_message
