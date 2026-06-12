@@ -1,0 +1,308 @@
+============================= test session starts =============================
+platform win32 -- Python 3.15.0b1, pytest-9.0.3, pluggy-1.6.0 -- C:\Python315\python.exe
+cachedir: .pytest_cache
+hypothesis profile 'default'
+rootdir: C:\JFA_Unify\backend
+configfile: pytest.ini
+plugins: anyio-4.13.0, hypothesis-6.153.0, asyncio-1.4.0, cov-7.1.0, mock-3.15.1
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 236 items
+
+tests/integration/test_rls_isolation.py::TestFailClosedDevices::test_no_context_returns_zero_devices PASSED [  0%]
+tests/integration/test_rls_isolation.py::TestFailClosedAccessLogs::test_no_context_returns_zero_access_logs PASSED [  0%]
+tests/integration/test_rls_isolation.py::TestSelectIsolationDevices::test_tenant_a_sees_only_device_a PASSED [  1%]
+tests/integration/test_rls_isolation.py::TestSelectIsolationDevices::test_tenant_b_sees_only_device_b PASSED [  1%]
+tests/integration/test_rls_isolation.py::TestSelectIsolationAccessLogs::test_tenant_a_sees_only_own_access_logs PASSED [  2%]
+tests/integration/test_rls_isolation.py::TestInsertCheckDevices::test_insert_own_device_succeeds PASSED [  2%]
+tests/integration/test_rls_isolation.py::TestInsertCheckDevices::test_insert_alien_device_fails PASSED [  2%]
+tests/integration/test_rls_isolation.py::TestUpdateIsolation::test_update_own_device_succeeds PASSED [  3%]
+tests/integration/test_rls_isolation.py::TestUpdateIsolation::test_update_alien_device_fails_silently PASSED [  3%]
+tests/integration/test_rls_isolation.py::TestDeleteIsolation::test_delete_alien_device_fails_silently PASSED [  4%]
+tests/integration/test_rls_isolation.py::TestContextSwitching::test_set_local_switches_tenant_context PASSED [  4%]
+tests/integration/test_rls_isolation.py::TestAllTablesSmokeTest::test_all_tables_isolated_simultaneously PASSED [  5%]
+tests/integration/test_rls_routers.py::TestRLSRoutersFailClosed::test_list_devices_without_auth_returns_401 PASSED [  5%]
+tests/integration/test_rls_routers.py::TestRLSRoutersFailClosed::test_get_device_without_auth_returns_401 PASSED [  5%]
+tests/integration/test_rls_routers.py::TestRLSRoutersIsolation::test_tenant_a_sees_only_own_devices PASSED [  6%]
+tests/integration/test_rls_routers.py::TestRLSRoutersIsolation::test_tenant_b_sees_only_own_devices PASSED [  6%]
+tests/integration/test_rls_routers.py::TestRLSRoutersIsolation::test_tenant_a_cannot_access_tenant_b_device PASSED [  7%]
+tests/integration/test_rls_routers.py::TestRLSRoutersIsolation::test_create_device_with_wrong_tenant_id_fails PASSED [  7%]
+tests/integration/test_rls_routers.py::TestRLSRoutersContextSwitching::test_sequential_requests_different_tenants PASSED [  8%]
+tests/integration/test_rls_routers.py::TestRLSRoutersE2E::test_create_and_list_own_device PASSED [  8%]
+tests/test_access_control.py::TestAccessControlPINValidation::test_pin_validation_success PASSED [  8%]
+tests/test_access_control.py::TestAccessControlPINValidation::test_pin_validation_invalid PASSED [  9%]
+tests/test_access_control.py::TestAccessControlPINValidation::test_pin_validation_pin_not_provided PASSED [  9%]
+tests/test_access_control.py::TestAccessControlPINValidation::test_pin_validation_no_salt PASSED [ 10%]
+tests/test_access_control.py::TestAccessControlPINValidation::test_pin_validation_no_hash_stored PASSED [ 10%]
+tests/test_access_control.py::TestAccessControlCardValidation::test_card_validation_success PASSED [ 11%]
+tests/test_access_control.py::TestAccessControlCardValidation::test_card_validation_case_insensitive PASSED [ 11%]
+tests/test_access_control.py::TestAccessControlCardValidation::test_card_validation_not_recognized PASSED [ 11%]
+tests/test_access_control.py::TestAccessControlCardValidation::test_card_validation_ignores_internal_keys PASSED [ 12%]
+tests/test_access_control.py::TestAccessControlDoubleAuth::test_double_auth_success PASSED [ 12%]
+tests/test_access_control.py::TestAccessControlDoubleAuth::test_double_auth_pin_invalid PASSED [ 13%]
+tests/test_access_control.py::TestAccessControlDoubleAuth::test_double_auth_card_invalid PASSED [ 13%]
+tests/test_access_control.py::TestAccessControlEdgeCases::test_device_not_found PASSED [ 13%]
+tests/test_access_control.py::TestAccessControlEdgeCases::test_device_disabled PASSED [ 14%]
+tests/test_access_control.py::TestAccessControlEdgeCases::test_unknown_auth_mode PASSED [ 14%]
+tests/test_access_control.py::TestAccessControlEdgeCases::test_tenant_isolation_rls PASSED [ 15%]
+tests/test_access_control.py::TestAccessControlAuditLogging::test_audit_log_on_success PASSED [ 15%]
+tests/test_access_control.py::TestAccessControlAuditLogging::test_audit_log_on_failure PASSED [ 16%]
+tests/test_access_control.py::TestAccessControlAuditLogging::test_audit_log_on_device_not_found PASSED [ 16%]
+tests/test_access_crypto.py::TestComputePINHash::test_deterministic_hash PASSED [ 16%]
+tests/test_access_crypto.py::TestComputePINHash::test_different_pins_different_hashes PASSED [ 17%]
+tests/test_access_crypto.py::TestComputePINHash::test_different_salts_different_hashes PASSED [ 17%]
+tests/test_access_crypto.py::TestComputePINHash::test_uses_secret_key_in_hash FAILED [ 18%]
+tests/test_access_crypto.py::TestComputePINHash::test_empty_pin PASSED   [ 18%]
+tests/test_access_crypto.py::TestComputePINHash::test_special_characters_in_pin PASSED [ 19%]
+tests/test_access_crypto.py::TestComputePINHash::test_unicode_pin PASSED [ 19%]
+tests/test_access_crypto.py::TestComputePINHash::test_long_pin PASSED    [ 19%]
+tests/test_access_crypto.py::TestComputePINHash::test_single_character_pin PASSED [ 20%]
+tests/test_access_crypto.py::TestComputePINHash::test_numeric_string_vs_numeric PASSED [ 20%]
+tests/test_access_crypto.py::TestHashPINForDevice::test_hash_pin_for_device_exports_correctly PASSED [ 21%]
+tests/test_access_crypto.py::TestHashPINForDevice::test_hash_pin_for_device_is_deterministic PASSED [ 21%]
+tests/test_access_crypto.py::TestHashPINForDevice::test_hash_pin_for_device_matches_compute PASSED [ 22%]
+tests/test_access_crypto.py::TestHashPINForDevice::test_different_devices_same_pin_different_salts PASSED [ 22%]
+tests/test_access_crypto.py::TestGeneratePINSalt::test_generates_32_bytes PASSED [ 22%]
+tests/test_access_crypto.py::TestGeneratePINSalt::test_generates_random_salts PASSED [ 23%]
+tests/test_access_crypto.py::TestGeneratePINSalt::test_salt_is_bytes_type PASSED [ 23%]
+tests/test_access_crypto.py::TestGeneratePINSalt::test_salt_usable_in_hmac PASSED [ 24%]
+tests/test_access_crypto.py::TestGeneratePINSalt::test_multiple_generations_unique PASSED [ 24%]
+tests/test_access_crypto.py::TestCryptoIntegration::test_pin_storage_and_verification_flow PASSED [ 25%]
+tests/test_access_crypto.py::TestCryptoIntegration::test_wrong_pin_fails_verification PASSED [ 25%]
+tests/test_access_crypto.py::TestCryptoIntegration::test_salt_compromise_scenario FAILED [ 25%]
+tests/test_access_crypto.py::TestCryptoIntegration::test_multiple_devices_independent_salts PASSED [ 26%]
+tests/test_auth.py::TestGenerateHmacToken::test_generate_token_returns_string PASSED [ 26%]
+tests/test_auth.py::TestGenerateHmacToken::test_generate_token_includes_exp PASSED [ 27%]
+tests/test_auth.py::TestGenerateHmacToken::test_generate_token_includes_payload_data PASSED [ 27%]
+tests/test_auth.py::TestGenerateHmacToken::test_generate_token_different_payloads_different_tokens PASSED [ 27%]
+tests/test_auth.py::TestGenerateHmacToken::test_generate_token_signature_is_deterministic PASSED [ 28%]
+tests/test_auth.py::TestVerifyHmacToken::test_verify_valid_token_returns_payload PASSED [ 28%]
+tests/test_auth.py::TestVerifyHmacToken::test_verify_expired_token_returns_none FAILED [ 29%]
+tests/test_auth.py::TestVerifyHmacToken::test_verify_tampered_token_returns_none PASSED [ 29%]
+tests/test_auth.py::TestVerifyHmacToken::test_verify_tampered_data_returns_none PASSED [ 30%]
+tests/test_auth.py::TestVerifyHmacToken::test_verify_malformed_token_returns_none PASSED [ 30%]
+tests/test_auth.py::TestVerifyHmacToken::test_verify_invalid_hex_returns_none PASSED [ 30%]
+tests/test_auth.py::TestVerifyHmacToken::test_verify_empty_token_returns_none PASSED [ 31%]
+tests/test_auth.py::TestVerifyHmacToken::test_verify_none_token_returns_none PASSED [ 31%]
+tests/test_auth.py::TestHashPin::test_hash_pin_returns_string PASSED     [ 32%]
+tests/test_auth.py::TestHashPin::test_hash_pin_deterministic PASSED      [ 32%]
+tests/test_auth.py::TestHashPin::test_hash_pin_different_pins_different_hashes PASSED [ 33%]
+tests/test_auth.py::TestHashPin::test_hash_pin_uses_secret_key FAILED    [ 33%]
+tests/test_auth.py::TestHashPin::test_hash_pin_various_lengths PASSED    [ 33%]
+tests/test_auth.py::TestVerifyPin::test_verify_pin_correct_returns_true PASSED [ 34%]
+tests/test_auth.py::TestVerifyPin::test_verify_pin_incorrect_returns_false PASSED [ 34%]
+tests/test_auth.py::TestVerifyPin::test_verify_pin_case_sensitive PASSED [ 35%]
+tests/test_auth.py::TestVerifyPin::test_verify_pin_uses_hmac_compare_digest PASSED [ 35%]
+tests/test_auth.py::TestGenerateNonce::test_generate_nonce_returns_string PASSED [ 36%]
+tests/test_auth.py::TestGenerateNonce::test_generate_nonce_default_length PASSED [ 36%]
+tests/test_auth.py::TestGenerateNonce::test_generate_nonce_custom_length PASSED [ 36%]
+tests/test_auth.py::TestGenerateNonce::test_generate_nonce_random PASSED [ 37%]
+tests/test_auth.py::TestGenerateNonce::test_generate_nonce_length_one PASSED [ 37%]
+tests/test_auth.py::TestSigningIntegration::test_token_round_trip PASSED [ 38%]
+tests/test_auth.py::TestSigningIntegration::test_pin_round_trip PASSED   [ 38%]
+tests/test_auth.py::TestSigningIntegration::test_nonce_entropy PASSED    [ 38%]
+tests/test_middleware_auth.py::TestTenantAuthMiddlewarePublicPaths::test_public_path_health_skips_auth PASSED [ 39%]
+tests/test_middleware_auth.py::TestTenantAuthMiddlewarePublicPaths::test_public_path_docs_skips_auth PASSED [ 39%]
+tests/test_middleware_auth.py::TestTenantAuthMiddlewarePublicPaths::test_public_path_openapi_json_skips_auth PASSED [ 40%]
+tests/test_middleware_auth.py::TestTenantAuthMiddlewarePublicPaths::test_public_path_redoc_skips_auth PASSED [ 40%]
+tests/test_middleware_auth.py::TestTenantAuthMiddlewareAuthorization::test_missing_authorization_header_returns_401 PASSED [ 41%]
+tests/test_middleware_auth.py::TestTenantAuthMiddlewareAuthorization::test_authorization_header_without_bearer_prefix_returns_401 PASSED [ 41%]
+tests/test_middleware_auth.py::TestTenantAuthMiddlewareAuthorization::test_authorization_header_malformed_returns_401 PASSED [ 41%]
+tests/test_middleware_auth.py::TestTenantAuthMiddlewareTokenValidation::test_invalid_token_returns_401 PASSED [ 42%]
+tests/test_middleware_auth.py::TestTenantAuthMiddlewareTokenValidation::test_token_missing_tenant_id_returns_403 PASSED [ 42%]
+tests/test_middleware_auth.py::TestTenantAuthMiddlewareTokenValidation::test_token_tenant_id_invalid_uuid_returns_403 PASSED [ 43%]
+tests/test_middleware_auth.py::TestTenantAuthMiddlewareSuccess::test_valid_token_sets_request_state_tenant_id PASSED [ 43%]
+tests/test_middleware_auth.py::TestTenantAuthMiddlewareSuccess::test_valid_token_calls_next_middleware PASSED [ 44%]
+tests/test_middleware_auth.py::TestTenantAuthMiddlewareSuccess::test_valid_token_logs_debug_message PASSED [ 44%]
+tests/test_middleware_auth.py::TestGetTenantIdDependency::test_get_tenant_id_returns_uuid_from_request_state PASSED [ 44%]
+tests/test_middleware_auth.py::TestGetTenantIdDependency::test_get_tenant_id_missing_raises_403 PASSED [ 45%]
+tests/test_middleware_auth.py::TestGetTenantIdDependency::test_get_tenant_id_none_raises_403 PASSED [ 45%]
+tests/test_middleware_auth.py::TestTenantAuthMiddlewareIntegration::test_multiple_sequential_requests_independence PASSED [ 46%]
+tests/test_middleware_auth.py::TestTenantAuthMiddlewareIntegration::test_request_continues_after_auth_success PASSED [ 46%]
+tests/test_middleware_auth.py::TestAuthErrorMessages::test_missing_header_error_message_is_clear PASSED [ 47%]
+tests/test_middleware_auth.py::TestAuthErrorMessages::test_invalid_token_error_message_is_clear PASSED [ 47%]
+tests/test_middleware_auth.py::TestAuthErrorMessages::test_missing_tenant_id_error_message_is_clear PASSED [ 47%]
+tests/test_middleware_auth.py::TestAuthTokenParsing::test_bearer_token_is_extracted_correctly PASSED [ 48%]
+tests/test_middleware_auth.py::TestAuthTokenParsing::test_bearer_token_with_extra_whitespace_is_stripped PASSED [ 48%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceT3AccessRequest::test_on_access_request_parse_topic PASSED [ 49%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceT3AccessRequest::test_on_access_request_invalid_topic_structure PASSED [ 49%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceT3AccessRequest::test_on_access_request_json_parse_error PASSED [ 50%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceT3Heartbeat::test_on_heartbeat_parse_topic PASSED [ 50%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceT3DeviceStatus::test_on_device_status_parse_topic PASSED [ 50%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceT3AuditLog::test_on_audit_log PASSED [ 51%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceStartupDualMode::test_startup_subscribes_to_legacy_topics PASSED [ 51%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceStartupDualMode::test_startup_subscribes_to_t3_topics PASSED [ 52%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceStartupDualMode::test_startup_marks_running PASSED [ 52%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceEventTypeMapping::test_map_event_type_legacy PASSED [ 52%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceEventTypeMapping::test_map_event_type_t3 PASSED [ 53%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceEventTypeMapping::test_map_event_type_unknown PASSED [ 53%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceLegacyHandlers::test_on_pin_event_parse_json PASSED [ 54%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceLegacyHandlers::test_on_card_event_parse_json PASSED [ 54%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceLegacyHandlers::test_on_device_state_parse_json PASSED [ 55%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceLegacyHandlers::test_on_ota_event_parse_json PASSED [ 55%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceStoreEvent::test_store_event_missing_device_id PASSED [ 55%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceStoreEvent::test_store_event_invalid_device_id PASSED [ 56%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceStoreEvent::test_store_event_device_not_found PASSED [ 56%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceStoreEvent::test_store_event_exception_handling PASSED [ 57%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceShutdown::test_shutdown_marks_stopped PASSED [ 57%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceShutdown::test_shutdown_calls_disconnect PASSED [ 58%]
+tests/test_mqtt_adapter_t3.py::TestMQTTServiceGetStatus::test_get_status_returns_dict PASSED [ 58%]
+tests/test_mqtt_e2e.py::TestMQTTBrokerConnectivity::test_connect_to_broker SKIPPED [ 58%]
+tests/test_mqtt_e2e.py::TestMQTTBrokerConnectivity::test_connect_disconnect_cycle SKIPPED [ 59%]
+tests/test_mqtt_e2e.py::TestMQTTBrokerConnectivity::test_multiple_connect_cycles SKIPPED [ 59%]
+tests/test_mqtt_e2e.py::TestMQTTPublishSubscribe::test_publish_message SKIPPED [ 60%]
+tests/test_mqtt_e2e.py::TestMQTTPublishSubscribe::test_subscribe_and_receive SKIPPED [ 60%]
+tests/test_mqtt_e2e.py::TestMQTTPublishSubscribe::test_multiple_messages SKIPPED [ 61%]
+tests/test_mqtt_e2e.py::TestMQTTPublishSubscribe::test_wildcard_subscription SKIPPED [ 61%]
+tests/test_mqtt_e2e.py::TestMQTTQoS::test_publish_qos0 SKIPPED (Mosq...) [ 61%]
+tests/test_mqtt_e2e.py::TestMQTTQoS::test_publish_qos1 SKIPPED (Mosq...) [ 62%]
+tests/test_mqtt_e2e.py::TestMQTTQoS::test_subscribe_qos0 SKIPPED (Mo...) [ 62%]
+tests/test_mqtt_e2e.py::TestMQTTErrorHandling::test_publish_without_connect_raises_error SKIPPED [ 63%]
+tests/test_mqtt_e2e.py::TestMQTTErrorHandling::test_subscribe_without_connect_raises_error SKIPPED [ 63%]
+tests/test_mqtt_e2e.py::TestMQTTErrorHandling::test_disconnect_cleans_up SKIPPED [ 63%]
+tests/test_mqtt_resilience.py::TestMQTTReconnection::test_single_connection_attempt_success PASSED [ 64%]
+tests/test_mqtt_resilience.py::TestMQTTReconnection::test_reconnect_after_disconnect PASSED [ 64%]
+tests/test_mqtt_resilience.py::TestMQTTReconnection::test_connection_with_retries PASSED [ 65%]
+tests/test_mqtt_resilience.py::TestMQTTReconnection::test_exponential_backoff_simulation PASSED [ 65%]
+tests/test_mqtt_resilience.py::TestMQTTMessagePublishing::test_publish_when_connected PASSED [ 66%]
+tests/test_mqtt_resilience.py::TestMQTTMessagePublishing::test_publish_fails_when_disconnected PASSED [ 66%]
+tests/test_mqtt_resilience.py::TestMQTTMessagePublishing::test_multiple_publishes PASSED [ 66%]
+tests/test_mqtt_resilience.py::TestMQTTMessagePublishing::test_publish_with_different_qos_levels PASSED [ 67%]
+tests/test_mqtt_resilience.py::TestMQTTSubscription::test_subscribe_when_connected PASSED [ 67%]
+tests/test_mqtt_resilience.py::TestMQTTSubscription::test_subscribe_fails_when_disconnected PASSED [ 68%]
+tests/test_mqtt_resilience.py::TestMQTTSubscription::test_multiple_subscriptions PASSED [ 68%]
+tests/test_mqtt_resilience.py::TestMQTTSubscription::test_resubscribe_after_reconnect PASSED [ 69%]
+tests/test_mqtt_resilience.py::TestMQTTConnectionStateTransitions::test_connection_state_transitions PASSED [ 69%]
+tests/test_mqtt_resilience.py::TestMQTTConnectionStateTransitions::test_operations_respect_connection_state PASSED [ 69%]
+tests/test_mqtt_resilience.py::TestMQTTBufferingAndFlush::test_message_buffer_during_disconnect PASSED [ 70%]
+tests/test_mqtt_resilience.py::TestMQTTBufferingAndFlush::test_flush_respects_order PASSED [ 70%]
+tests/test_mqtt_resilience.py::TestMQTTEdgeCases::test_double_connect PASSED [ 71%]
+tests/test_mqtt_resilience.py::TestMQTTEdgeCases::test_double_disconnect PASSED [ 71%]
+tests/test_mqtt_resilience.py::TestMQTTEdgeCases::test_rapid_connect_disconnect_cycles PASSED [ 72%]
+tests/test_mqtt_resilience.py::TestMQTTEdgeCases::test_empty_message_publish PASSED [ 72%]
+tests/test_mqtt_service.py::TestMqttClientAbstract::test_is_connected_inicial_false PASSED [ 72%]
+tests/test_mqtt_service.py::TestMqttClientAbstract::test_on_connect_sucesso PASSED [ 73%]
+tests/test_mqtt_service.py::TestMqttClientAbstract::test_on_connect_falha PASSED [ 73%]
+tests/test_mqtt_service.py::TestMqttClientAbstract::test_on_disconnect PASSED [ 74%]
+tests/test_mqtt_service.py::TestTuyaMqttClient::test_topic_status_formato_correcto PASSED [ 74%]
+tests/test_mqtt_service.py::TestTuyaMqttClient::test_topic_command_formato_correcto PASSED [ 75%]
+tests/test_mqtt_service.py::TestTuyaMqttClient::test_connect_chama_paho_connect PASSED [ 75%]
+tests/test_mqtt_service.py::TestTuyaMqttClient::test_connect_com_credenciais PASSED [ 75%]
+tests/test_mqtt_service.py::TestTuyaMqttClient::test_publish_encode_str PASSED [ 76%]
+tests/test_mqtt_service.py::TestTuyaMqttClient::test_subscribe_regista_callback PASSED [ 76%]
+tests/test_mqtt_service.py::TestTuyaMqttClient::test_send_command_publica_json PASSED [ 77%]
+tests/test_mqtt_service.py::TestTuyaMqttClient::test_disconnect_para_loop PASSED [ 77%]
+tests/test_mqtt_service.py::TestTuyaMqttClient::test_handle_message_chama_callback PASSED [ 77%]
+tests/test_router_access.py::TestValidateAccess::test_validate_pin_success_returns_200 PASSED [ 78%]
+tests/test_router_access.py::TestValidateAccess::test_validate_pin_response_structure PASSED [ 78%]
+tests/test_router_access.py::TestValidateAccess::test_validate_card_returns_200 PASSED [ 79%]
+tests/test_router_access.py::TestValidateAccess::test_validate_invalid_device_id_returns_400 PASSED [ 79%]
+tests/test_router_access.py::TestValidateAccess::test_validate_missing_device_id_returns_422 PASSED [ 80%]
+tests/test_router_access.py::TestValidateAccess::test_validate_empty_payload_returns_422 PASSED [ 80%]
+tests/test_router_access.py::TestValidateAccess::test_validate_creates_audit_log PASSED [ 80%]
+tests/test_router_access.py::TestAccessIntegration::test_multiple_validation_attempts PASSED [ 81%]
+tests/test_router_access.py::TestAccessIntegration::test_validate_same_device_different_credentials PASSED [ 81%]
+tests/test_router_devices.py::TestListDevices::test_list_returns_200_and_device_array PASSED [ 82%]
+tests/test_router_devices.py::TestListDevices::test_list_response_structure PASSED [ 82%]
+tests/test_router_devices.py::TestListDevices::test_list_card_count_calculation PASSED [ 83%]
+tests/test_router_devices.py::TestListDevices::test_list_empty_devices PASSED [ 83%]
+tests/test_router_devices.py::TestGetDevice::test_get_returns_200_and_device PASSED [ 83%]
+tests/test_router_devices.py::TestGetDevice::test_get_device_structure PASSED [ 84%]
+tests/test_router_devices.py::TestGetDevice::test_get_nonexistent_device_returns_404 PASSED [ 84%]
+tests/test_router_devices.py::TestGetDevice::test_get_invalid_uuid_format_returns_422 PASSED [ 85%]
+tests/test_router_devices.py::TestCreateDevice::test_create_with_pin_returns_201 PASSED [ 85%]
+tests/test_router_devices.py::TestCreateDevice::test_create_with_cards_returns_201 PASSED [ 86%]
+tests/test_router_devices.py::TestCreateDevice::test_create_with_pin_and_cards_returns_201 PASSED [ 86%]
+tests/test_router_devices.py::TestCreateDevice::test_create_with_wrong_tenant_id_returns_403 PASSED [ 86%]
+tests/test_router_devices.py::TestCreateDevice::test_create_missing_required_field_returns_422 PASSED [ 87%]
+tests/test_router_devices.py::TestUpdateDevice::test_update_name_returns_200 PASSED [ 87%]
+tests/test_router_devices.py::TestUpdateDevice::test_update_enabled_status_returns_200 PASSED [ 88%]
+tests/test_router_devices.py::TestUpdateDevice::test_update_pin_plain_returns_200 PASSED [ 88%]
+tests/test_router_devices.py::TestUpdateDevice::test_update_card_uids_returns_200 PASSED [ 88%]
+tests/test_router_devices.py::TestUpdateDevice::test_update_nonexistent_device_returns_404 PASSED [ 89%]
+tests/test_router_devices.py::TestUpdateDevice::test_update_multiple_fields_returns_200 PASSED [ 89%]
+tests/test_router_devices.py::TestDeleteDevice::test_delete_returns_204 PASSED [ 90%]
+tests/test_router_devices.py::TestDeleteDevice::test_delete_soft_disables_device PASSED [ 90%]
+tests/test_router_devices.py::TestDeleteDevice::test_delete_nonexistent_device_returns_404 PASSED [ 91%]
+tests/test_router_devices.py::TestDeviceIntegration::test_create_then_get_returns_same_device PASSED [ 91%]
+tests/test_router_devices.py::TestDeviceIntegration::test_multiple_list_calls_consistent PASSED [ 91%]
+tests/test_router_logs.py::TestListLogs::test_list_returns_200_and_logs_array PASSED [ 92%]
+tests/test_router_logs.py::TestListLogs::test_list_log_response_structure PASSED [ 92%]
+tests/test_router_logs.py::TestListLogs::test_list_with_default_limit PASSED [ 93%]
+tests/test_router_logs.py::TestListLogs::test_list_with_custom_limit PASSED [ 93%]
+tests/test_router_logs.py::TestListLogs::test_list_with_invalid_limit_returns_422 PASSED [ 94%]
+tests/test_router_logs.py::TestListLogs::test_list_with_limit_too_high_returns_422 PASSED [ 94%]
+tests/test_router_logs.py::TestListLogs::test_list_with_offset PASSED    [ 94%]
+tests/test_router_logs.py::TestListLogs::test_list_with_invalid_offset_returns_422 PASSED [ 95%]
+tests/test_router_logs.py::TestListLogs::test_list_with_device_id_filter PASSED [ 95%]
+tests/test_router_logs.py::TestListLogs::test_list_with_invalid_device_id_format_returns_422 PASSED [ 96%]
+tests/test_router_logs.py::TestListLogs::test_list_with_multiple_filters PASSED [ 96%]
+tests/test_router_logs.py::TestListLogs::test_list_empty_logs PASSED     [ 97%]
+tests/test_router_logs.py::TestLogsOrdering::test_logs_ordered_by_timestamp_descending PASSED [ 97%]
+tests/test_router_logs.py::TestLogsPagination::test_pagination_respects_limit_and_offset PASSED [ 97%]
+tests/test_router_logs.py::TestLogsPagination::test_large_offset_returns_empty PASSED [ 98%]
+tests/test_router_logs.py::TestLogsFiltering::test_filter_by_device_id_returns_only_that_device PASSED [ 98%]
+tests/test_router_logs.py::TestLogsFiltering::test_filter_by_nonexistent_device_returns_empty PASSED [ 99%]
+tests/test_router_logs.py::TestLogsIntegration::test_list_all_then_filter_by_device PASSED [ 99%]
+tests/test_router_logs.py::TestLogsIntegration::test_pagination_across_large_result_set PASSED [100%]
+
+================================== FAILURES ===================================
+_______________ TestComputePINHash.test_uses_secret_key_in_hash _______________
+tests\test_access_crypto.py:81: in test_uses_secret_key_in_hash
+    assert hash_alpha != hash_beta
+E   AssertionError: assert '5c6bf96e00fa1ee7d76e9e00653e9bd4997311b2b1f1157e0ad3a25d866ce5a2' != '5c6bf96e00fa1ee7d76e9e00653e9bd4997311b2b1f1157e0ad3a25d866ce5a2'
+_____________ TestCryptoIntegration.test_salt_compromise_scenario _____________
+tests\test_access_crypto.py:266: in test_salt_compromise_scenario
+    assert wrong_secret_hash != pin_hash
+E   AssertionError: assert '2ae4454ba7772889094b89232a094e502db158ef91799d325be7f52082b83529' != '2ae4454ba7772889094b89232a094e502db158ef91799d325be7f52082b83529'
+_________ TestVerifyHmacToken.test_verify_expired_token_returns_none __________
+tests\test_auth.py:129: in test_verify_expired_token_returns_none
+    assert result is None
+E   AssertionError: assert {'exp': 4600, 'tenant_id': 'test'} is None
+__________________ TestHashPin.test_hash_pin_uses_secret_key __________________
+tests\test_auth.py:224: in test_hash_pin_uses_secret_key
+    assert hash1 != hash2
+E   AssertionError: assert '2bce8ccb3f679f38267e7f4b1959dcfe38a88378300df6cded4451d347d7d8d1' != '2bce8ccb3f679f38267e7f4b1959dcfe38a88378300df6cded4451d347d7d8d1'
+============================== warnings summary ===============================
+tests/test_mqtt_e2e.py::TestMQTTBrokerConnectivity::test_connect_to_broker
+  C:\JFA_Unify\backend\tests\test_mqtt_e2e.py:43: DeprecationWarning: Callback API version 1 is deprecated, update to latest version
+    client = mqtt.Client()
+
+tests/test_router_devices.py: 24 warnings
+  C:\JFA_Unify\backend\tests\test_router_devices.py:35: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    created_at=datetime.utcnow(),
+
+tests/test_router_devices.py: 24 warnings
+  C:\JFA_Unify\backend\tests\test_router_devices.py:36: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    updated_at=datetime.utcnow(),
+
+tests/test_router_devices.py: 24 warnings
+  C:\JFA_Unify\backend\tests\test_router_devices.py:52: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    created_at=datetime.utcnow(),
+
+tests/test_router_devices.py: 24 warnings
+  C:\JFA_Unify\backend\tests\test_router_devices.py:53: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    updated_at=datetime.utcnow(),
+
+tests/test_router_devices.py::TestCreateDevice::test_create_with_pin_returns_201
+tests/test_router_devices.py::TestCreateDevice::test_create_with_cards_returns_201
+tests/test_router_devices.py::TestCreateDevice::test_create_with_pin_and_cards_returns_201
+  C:\JFA_Unify\backend\tests\test_router_devices.py:74: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    obj.created_at = datetime.utcnow()
+
+tests/test_router_devices.py::TestCreateDevice::test_create_with_pin_returns_201
+tests/test_router_devices.py::TestCreateDevice::test_create_with_cards_returns_201
+tests/test_router_devices.py::TestCreateDevice::test_create_with_pin_and_cards_returns_201
+  C:\JFA_Unify\backend\tests\test_router_devices.py:76: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    obj.updated_at = datetime.utcnow()
+
+tests/test_router_logs.py: 38 warnings
+  C:\JFA_Unify\backend\tests\test_router_logs.py:21: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    timestamp=datetime.utcnow(),
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_access_crypto.py::TestComputePINHash::test_uses_secret_key_in_hash
+FAILED tests/test_access_crypto.py::TestCryptoIntegration::test_salt_compromise_scenario
+FAILED tests/test_auth.py::TestVerifyHmacToken::test_verify_expired_token_returns_none
+FAILED tests/test_auth.py::TestHashPin::test_hash_pin_uses_secret_key - Asser...
+=========== 4 failed, 219 passed, 13 skipped, 141 warnings in 8.90s ===========
