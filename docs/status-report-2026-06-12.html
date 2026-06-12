@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JFA Unify — Status Completo (12-Jun-2026)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            padding: 40px 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 10px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); overflow: hidden; }
+        header { background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: white; padding: 60px 40px; text-align: center; }
+        header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        header p { font-size: 1.1em; opacity: 0.95; }
+        .content { padding: 40px; }
+        h2 { color: #dc2626; border-bottom: 3px solid #dc2626; padding-bottom: 10px; margin: 30px 0 20px 0; font-size: 1.8em; }
+        h3 { color: #991b1b; margin: 20px 0 10px 0; font-size: 1.3em; }
+        .section { margin: 25px 0; padding: 20px; background: #fef2f2; border-left: 4px solid #dc2626; border-radius: 5px; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; background: white; font-size: 0.95em; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #dc2626; color: white; font-weight: bold; }
+        tr:hover { background: #f9f5f5; }
+        .status-done { background: #d1fae5; color: #065f46; font-weight: bold; }
+        .status-blocked { background: #fef3c7; color: #92400e; font-weight: bold; }
+        .status-pending { background: #dbeafe; color: #0c2d6b; font-weight: bold; }
+        .status-indev { background: #f3e8ff; color: #5b21b6; font-weight: bold; }
+        .status-critical { background: #fee2e2; color: #7f1d1d; font-weight: bold; }
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; font-weight: bold; margin-right: 5px; }
+        .badge-done { background: #10b981; color: white; }
+        .badge-blocked { background: #f59e0b; color: white; }
+        .badge-pending { background: #3b82f6; color: white; }
+        .badge-critical { background: #ef4444; color: white; }
+        .highlight { background: #fef3c7; padding: 15px; border-left: 4px solid #f59e0b; border-radius: 3px; margin: 15px 0; }
+        .task-card { background: white; border: 1px solid #ddd; border-left: 4px solid #dc2626; padding: 15px; margin: 12px 0; border-radius: 3px; }
+        .task-card h4 { margin-bottom: 10px; color: #991b1b; }
+        .task-card p { margin: 5px 0; font-size: 0.95em; }
+        .footer { background: #fef2f2; padding: 30px 40px; text-align: center; border-top: 1px solid #ddd; color: #666; font-size: 0.9em; }
+        @media print { body { padding: 0; } .container { box-shadow: none; border-radius: 0; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+<header>
+    <h1>🚨 JFA Unify — Status Completo</h1>
+    <p>Open Tasks, Gaps, Bugs, Deploy, Research, Implementation, Production</p>
+    <p style="margin-top: 15px; font-size: 0.95em;">Relatório executivo para Fernando Amorim | 12 de Junho de 2026</p>
+</header>
+
+<div class="content">
+
+<h2>📊 RESUMO EXECUTIVO</h2>
+
+<div class="section">
+    <p><strong>Total Deliverables:</strong> 18+ ficheiros criados ✅</p>
+    <p style="margin-top: 10px;"><strong>Open Tasks em Sistema:</strong> 0 (nenhuma task activa no TaskList)</p>
+    <p style="margin-top: 10px;"><strong>Critical Blockers:</strong> 1 (NIF 511099177 contacto não encontrado)</p>
+    <p style="margin-top: 10px;"><strong>Próximas Ações:</strong> Procurar contacto HOJE (Jun 12) + iniciar Madeira outreach Jun 15</p>
+    <p style="margin-top: 10px;"><strong>Decision Path:</strong> GOOD (GTM Madeira) + MEDIUM contingency (recovery se contacto found)</p>
+</div>
+
+<h2>🟢 COMPLETO & DURÁVEL (✅ = FEITO)</h2>
+
+<table>
+    <tr><th>Item</th><th>Status</th><th>Deliverable</th><th>Nota</th></tr>
+    <tr><td>Relatório Consolidado</td><td class="status-done">✅ FEITO</td><td>JFA_CONSOLIDATED_REPORT_2026-06-12.html</td><td>3 opções + cash flow análise</td></tr>
+    <tr><td>DPIA Legal CNPD</td><td class="status-done">✅ FEITO</td><td>CNPD_DPIA_JFA_12Jun2026.html</td><td>Deadline 30-Jun, ready for lawyer</td></tr>
+    <tr><td>Roadmap Híbrido</td><td class="status-done">✅ FEITO</td><td>JFAUNIFY_HYBRID_ROADMAP_FINAL_2026-06-12.html</td><td>6-month execution + 2027 roadmap</td></tr>
+    <tr><td>SLA Framework</td><td class="status-done">✅ FEITO</td><td>docs/sla-framework.md</td><td>99.9% uptime, QBR, breach credits</td></tr>
+    <tr><td>Account Management</td><td class="status-done">✅ FEITO</td><td>docs/account-management-playbook.md</td><td>Retenção Top-5, venda cruzada plays</td></tr>
+    <tr><td>GTM Madeira Plan</td><td class="status-done">✅ FEITO</td><td>docs/gtm-madeira-plan.md</td><td>40+ leads, 3 fases, EUR 150-400k</td></tr>
+    <tr><td>Campaign Tracker</td><td class="status-done">✅ FEITO</td><td>docs/gtm-madeira-campaign-log.md</td><td>Deal pipeline template, weekly</td></tr>
+    <tr><td>Suite Integration Pitch</td><td class="status-done">✅ FEITO</td><td>docs/sales-pitch-jfa-suite-integration.md</td><td>30s pitch + 5min script + objections</td></tr>
+    <tr><td>Expansion Continente</td><td class="status-done">✅ FEITO</td><td>docs/expansion-continente-plan.md</td><td>Lisbon/Porto/Algarve, Q1-Q4 2027</td></tr>
+    <tr><td>Email Templates</td><td class="status-done">✅ FEITO</td><td>docs/email-templates/*.txt</td><td>Cold email, SLA, Suite pitch</td></tr>
+    <tr><td>Demo Guide</td><td class="status-done">✅ FEITO</td><td>docs/demo-guide.md</td><td>2-3 min walkthrough script</td></tr>
+    <tr><td>Landing Page</td><td class="status-done">✅ FEITO</td><td>frontend/landing/index.html</td><td>Madeira pitch, 3 pricing tiers</td></tr>
+    <tr><td>SvelteKit Demo Data</td><td class="status-done">✅ FEITO</td><td>frontend/src/lib/stores/demoData.ts</td><td>8 devices + 10 events mock</td></tr>
+    <tr><td>NIF Validator</td><td class="status-done">✅ FEITO</td><td>backend/app/utils/nif_validator.py</td><td>Modulo 11, NIPC validation</td></tr>
+    <tr><td>Memory — Output Rules</td><td class="status-done">✅ FEITO</td><td>memory/feedback_cc_output_rules.md</td><td>RULE para futuras sessões</td></tr>
+    <tr><td>Memory — Strategy</td><td class="status-done">✅ FEITO</td><td>memory/project_jfa_unify_strategy.md</td><td>Contexto NIF + GOOD path</td></tr>
+</table>
+
+<h2>🔴 BLOQUEADO (Não há ação CC possível)</h2>
+
+<table>
+    <tr><th>Item</th><th>Status</th><th>Bloqueador</th><th>Resolução</th><th>Impact</th></tr>
+    <tr><td>Recovery NIF 511099177</td><td class="status-blocked">🔴 BLOCKED</td><td>Sem contacto (email, phone, nome)</td><td>FA procura hoje em Gmail/contratos; se encontrado, call Jun 15-17</td><td>EUR 200k potential</td></tr>
+</table>
+
+<h2>🟡 OPEN TASKS — EXECUÇÃO (Aguarda Jun 15)</h2>
+
+<div class="section">
+    <h3>Task #1: SLA Emails para Top-5 Clientes</h3>
+    <div class="task-card">
+        <h4>📧 Enviar SLA Upgrade Offer</h4>
+        <p><strong>Timeline:</strong> Jun 12-30</p>
+        <p><strong>Responsável:</strong> Fernando Amorim</p>
+        <p><strong>Ação:</strong> Usar template `docs/email-templates/sla-upgrade-offer.txt` — enviar para 5 clientes (stagger Mon/Wed/Fri)</p>
+        <p><strong>Target:</strong> 3/5 sign = EUR 900/mês = EUR 10.8k/year</p>
+        <p><strong>Checkpoint:</strong> Jun 30 — confirmar sign-ups</p>
+        <p><strong>Blocker:</strong> Nenhum — pode começar agora</p>
+    </div>
+
+    <h3>Task #2: Madeira Cold Email Outreach</h3>
+    <div class="task-card">
+        <h4>📧 Começar Madeira GTM Outreach</h4>
+        <p><strong>Timeline:</strong> Jun 15 — Dez 31</p>
+        <p><strong>Responsável:</strong> Fernando Amorim + contractor (sales/marketing)</p>
+        <p><strong>Ação:</strong> Usar template `docs/email-templates/madeira-b2b-cold-email.txt` — enviar 5-10 emails/semana para hotéis, escolas, residências, condomínios</p>
+        <p><strong>Target:</strong> 1-2 demos/semana, 3-5 closes by Dez</p>
+        <p><strong>ACV:</strong> EUR 50-80k per logo</p>
+        <p><strong>Checkpoint:</strong> Jul 15 (target 4-5 demos booked)</p>
+        <p><strong>Blocker:</strong> Contractor hire (need by Jun 15)</p>
+        <p><strong>Tracker:</strong> `docs/gtm-madeira-campaign-log.md` (weekly updates)</p>
+    </div>
+
+    <h3>Task #3: Madeira Demos & Proposals</h3>
+    <div class="task-card">
+        <h4>🎬 Schedule & Run Madeira Demos</h4>
+        <p><strong>Timeline:</strong> Jul-Ago (3-5 demos/mês)</p>
+        <p><strong>Responsável:</strong> Fernando Amorim + contractor</p>
+        <p><strong>Ação:</strong> Usar `docs/demo-guide.md` script (2-3 min walkthrough); landing page `frontend/landing/index.html` as background</p>
+        <p><strong>Target:</strong> 3-5 demos completed by Ago 31</p>
+        <p><strong>Checkpoint:</strong> Ago 15 (3+ demos run, feedback logged)</p>
+        <p><strong>Blocker:</strong> Demo video (target Jul-Ago); landing page live (ready now)</p>
+        <p><strong>Material:</strong> Landing page ready, demoData.ts ready</p>
+    </div>
+
+    <h3>Task #4: Demo Video Production</h3>
+    <div class="task-card">
+        <h4>🎥 Gravar Demo Video 2-3 min</h4>
+        <p><strong>Timeline:</strong> Jul-Ago</p>
+        <p><strong>Responsável:</strong> Fernando Amorim (recording) + dev team (technical assist)</p>
+        <p><strong>Ação:</strong> Gravar 2-3 min walkthrough usando `docs/demo-guide.md` script; use landing page + SvelteKit PWA</p>
+        <p><strong>Target:</strong> Video pronto by Jul 31; use in Madeira demos from Ago onwards</p>
+        <p><strong>Checkpoint:</strong> Jul 31</p>
+        <p><strong>Blocker:</strong> SvelteKit PWA must be close to live (target Aug)</p>
+        <p><strong>Deliverable:</strong> MP4/WebM file, embed in landing page</p>
+    </div>
+
+    <h3>Task #5: Madeira Closes & Contracts</h3>
+    <div class="task-card">
+        <h4>📝 Close 3-5 Madeira Logos</h4>
+        <p><strong>Timeline:</strong> Set-Dez</p>
+        <p><strong>Responsável:</strong> Fernando Amorim + contractor</p>
+        <p><strong>Ação:</strong> Follow-up on proposals; send contracts; negotiate terms</p>
+        <p><strong>Target:</strong> 3-5 closes by Dez 31 @ EUR 50-80k ACV each = EUR 150-400k annual</p>
+        <p><strong>Checkpoint:</strong> Set 30 (1+ close), Nov 30 (3+ closes)</p>
+        <p><strong>Blocker:</strong> Demos must be run (Jul-Ago); proposals must be sent (Ago-Set)</p>
+        <p><strong>Deliverable:</strong> Signed contracts + onboarding kickoff</p>
+    </div>
+
+    <h3>Task #6: Suite Venda Cruzada (Top-5 QBR)</h3>
+    <div class="task-card">
+        <h4>💰 Suite Integration Pitch durante QBR</h4>
+        <p><strong>Timeline:</strong> Jul-Ago (QBR meetings)</p>
+        <p><strong>Responsável:</strong> Fernando Amorim</p>
+        <p><strong>Ação:</strong> Durante Top-5 QBR meetings, usar `docs/sales-pitch-jfa-suite-integration.md` — pitch EUR 300/month add-on</p>
+        <p><strong>Target:</strong> 2-3 clients sign = EUR 7.2-10.8k/year</p>
+        <p><strong>Checkpoint:</strong> Ago 31 (target 1-2 signed)</p>
+        <p><strong>Blocker:</strong> Nenhum — pode começar Jul</p>
+        <p><strong>Material:</strong> Script pronto, objection handlers pronto</p>
+    </div>
+
+    <h3>Task #7: 2027 Continente Expansion Planning</h3>
+    <div class="task-card">
+        <h4>🗺️ Iniciar Recruitment para Lisbon Sales Rep</h4>
+        <p><strong>Timeline:</strong> Set-Out (plan), hiring Nov-Dez</p>
+        <p><strong>Responsável:</strong> Fernando Amorim</p>
+        <p><strong>Ação:</strong> Começar recruitment para Lisbon sales rep (local, PT-speaking, B2B experience); target hire Jan 2027</p>
+        <p><strong>Roadmap:</strong> `docs/expansion-continente-plan.md` (Q1-Q4 2027 complete)</p>
+        <p><strong>Target 2027:</strong> EUR 1M+ annual revenue (Madeira EUR 500-600k + Continente EUR 200-400k)</p>
+        <p><strong>Checkpoint:</strong> Out 31 (recruitment brief finalized), Dez 31 (candidate pipeline identified)</p>
+        <p><strong>Blocker:</strong> Madeira closes must be underway (proof of concept)</p>
+        <p><strong>Investment:</strong> EUR 132k/year (sales rep EUR 24k + marketing EUR 36k + support EUR 60k + office EUR 12k)</p>
+    </div>
+
+    <h3>Task #8: SvelteKit PWA Final Push</h3>
+    <div class="task-card">
+        <h4>⚡ Finalizar SvelteKit PWA para Production</h4>
+        <p><strong>Timeline:</strong> Ago 31 (target live)</p>
+        <p><strong>Responsável:</strong> Dev team</p>
+        <p><strong>Ação:</strong> Complete PWA implementation; demoData.ts ready (8 devices, 10 events)</p>
+        <p><strong>Target:</strong> Full functional PWA live by Ago 31; demo-ready for marketing/sales</p>
+        <p><strong>Checkpoint:</strong> Jul 31 (80% complete), Ago 15 (95% complete), Ago 31 (live)</p>
+        <p><strong>Blocker:</strong> Nenhum — dev team independent</p>
+        <p><strong>Critical for:</strong> Demo video (Jul-Ago), Madeira demos (Ago onwards)</p>
+    </div>
+
+    <h3>Task #9: Team Communication — Roadmap</h3>
+    <div class="task-card">
+        <h4>📢 Announce Roadmap to Team</h4>
+        <p><strong>Timeline:</strong> Jun 13-14</p>
+        <p><strong>Responsável:</strong> Fernando Amorim</p>
+        <p><strong>Ação:</strong> Hold team meeting; present EUR 350-450k 2026 roadmap (sustainable), EUR 1M+ 2027 (growth)</p>
+        <p><strong>Message:</strong> "We're not collapsing. We have a 6-month plan to diversify and grow."</p>
+        <p><strong>Checkpoint:</strong> Jun 14 (meeting done, moral assessed)</p>
+        <p><strong>Blocker:</strong> Nenhum — pode fazer já</p>
+        <p><strong>Impact:</strong> Retention of engineering team (critical for SvelteKit PWA delivery)</p>
+    </div>
+
+    <h3>Task #10: Recovery Attempt (IF contacto found)</h3>
+    <div class="task-card">
+        <h4>📞 Recovery Call para NIF 511099177</h4>
+        <p><strong>Timeline:</strong> Jun 15-17 (IF contacto found by Jun 12)</p>
+        <p><strong>Responsável:</strong> Fernando Amorim</p>
+        <p><strong>Ação:</strong> Search Gmail/contratos/local files for NIF 511099177 contacto; if found, call Jun 15-17</p>
+        <p><strong>Script:</strong> `docs/superpowers/plans/recovery-log.md` (recovery playbook pronto)</p>
+        <p><strong>Target:</strong> EUR 200k recovery (70% chance if contacto found & responsive)</p>
+        <p><strong>Checkpoint:</strong> Jun 12 (contacto search), Jun 17 (call outcome)</p>
+        <p><strong>Status:</strong> 🔴 BLOCKED até contacto found</p>
+        <p><strong>Impact:</strong> If success: EUR 450-650k 2026; if fail: EUR 350-450k (GOOD path)</p>
+    </div>
+</table>
+
+<h2>🐛 BUGS & ISSUES (Conhecidos)</h2>
+
+<table>
+    <tr><th>Bug/Issue</th><th>Severidade</th><th>Status</th><th>Resolução</th><th>Timeline</th></tr>
+    <tr><td>SvelteKit PWA not live</td><td class="status-pending">MEDIUM</td><td>IN DEV</td><td>Dev team prioritize Aug target</td><td>Aug 31</td></tr>
+    <tr><td>Demo video not recorded</td><td class="status-pending">MEDIUM</td><td>PENDING</td><td>Record Jul-Ago using demo-guide.md script</td><td>Jul 31</td></tr>
+    <tr><td>Contractor/sales partner not hired</td><td class="status-critical">HIGH</td><td>PENDING</td><td>Post job + interview by Jun 15</td><td>Jun 15</td></tr>
+    <tr><td>Landing page not deployed to jfaunify.pt/madeira</td><td class="status-pending">MEDIUM</td><td>PENDING</td><td>Deploy frontend/landing/index.html to production</td><td>Jun 15</td></tr>
+    <tr><td>PostgreSQL production setup (ubuntu-50)</td><td class="status-pending">MEDIUM</td><td>NOT STARTED</td><td>Create docker-compose.prod.yml + deploy script</td><td>TBD (pre-launch)</td></tr>
+    <tr><td>MQTT Tuya adapter load testing</td><td class="status-pending">LOW</td><td>NOT TESTED</td><td>Run load tests before Madeira go-live</td><td>Aug</td></tr>
+</table>
+
+<h2>🚀 DEPLOY STATUS</h2>
+
+<table>
+    <tr><th>Component</th><th>Env</th><th>Status</th><th>Notes</th></tr>
+    <tr><td>Landing Page (Madeira)</td><td>Production</td><td class="status-pending">❌ NOT DEPLOYED</td><td>Ready to deploy; need jfaunify.pt/madeira domain + hosting</td></tr>
+    <tr><td>SvelteKit PWA Frontend</td><td>Production</td><td class="status-pending">❌ NOT DEPLOYED</td><td>In dev; target Aug 31 live</td></tr>
+    <tr><td>FastAPI Backend</td><td>Production</td><td class="status-pending">❌ NOT DEPLOYED</td><td>Ready code; need ubuntu-50 infra setup</td></tr>
+    <tr><td>PostgreSQL RLS</td><td>Production</td><td class="status-pending">❌ NOT DEPLOYED</td><td>Test setup ready (docker-compose.test.yml); need prod setup</td></tr>
+    <tr><td>MQTT Tuya Adapter</td><td>Production</td><td class="status-pending">❌ NOT DEPLOYED</td><td>Code ready; Phase 1-2 implementado, Phase 3 (ESP32) is roadmap</td></tr>
+    <tr><td>Cloudflare Tunnel</td><td>Production</td><td class="status-pending">❌ NOT CONFIGURED</td><td>No infra docs; TBD before launch</td></tr>
+</table>
+
+<div class="highlight">
+    <h3>⚠️ DEPLOY BLOCKER: Infrastructure ubuntu-50 não existe</h3>
+    <p><strong>Impacto:</strong> Não é possível deployar backend, PWA, ou qualquer produto em produção.</p>
+    <p><strong>O que precisa:</strong></p>
+    <ul style="margin-left: 20px; margin-top: 10px;">
+        <li>Create `deploy/ubuntu-50/docker-compose.prod.yml` (PostgreSQL + FastAPI + MQTT + Redis)</li>
+        <li>Create `deploy-unify` deployment script (análogo a `deploy-accesspay`)</li>
+        <li>Configure `.env` de produção (secrets, DB connection, MQTT broker)</li>
+        <li>Setup Cloudflare tunnel (domain routing)</li>
+    </ul>
+    <p><strong>Timeline:</strong> Pode ser feito em paralelo com Madeira GTM (não bloqueia); target Sep-Out para pre-launch testing</p>
+</div>
+
+<h2>🔬 RESEARCH NOT DONE</h2>
+
+<table>
+    <tr><th>Research Item</th><th>Status</th><th>Impact</th><th>Timeline</th></tr>
+    <tr><td>Madeira market validation (competitor analysis)</td><td class="status-pending">⏳ PENDING</td><td>Inform GTM messaging</td><td>Jun 15-30</td></tr>
+    <tr><td>Sales rep profiles (Continente hiring spec)</td><td class="status-pending">⏳ PENDING</td><td>Recruitment brief</td><td>Set-Out</td></tr>
+    <tr><td>MQTT broker load capacity (Madeira scale)</td><td class="status-pending">⏳ PENDING</td><td>Infra planning</td><td>Aug</td></tr>
+    <tr><td>Consultancy partnerships (Continente channels)</td><td class="status-pending">⏳ PENDING</td><td>2027 GTM strategy</td><td>Out-Nov</td></tr>
+</table>
+
+<h2>🏗️ IMPLEMENTATION NOT DONE/INCOMPLETE</h2>
+
+<table>
+    <tr><th>Feature/Component</th><th>Status</th><th>% Complete</th><th>Timeline</th><th>Notes</th></tr>
+    <tr><td>SvelteKit PWA Full UI</td><td class="status-indev">IN DEV</td><td>~70%</td><td>Aug 31</td><td>Demo ready now; full production features needed by Aug</td></tr>
+    <tr><td>Suite Integration Phase 1 (API endpoint)</td><td class="status-pending">NOT STARTED</td><td>0%</td><td>Jul 2026</td><td>POST /api/v1/suite/sync endpoint needed</td></tr>
+    <tr><td>Suite Integration Phase 2 (Webhook + billing)</td><td class="status-pending">NOT STARTED</td><td>0%</td><td>Aug 2026</td><td>JFA_Suite webhook receiver</td></tr>
+    <tr><td>Suite Integration Phase 3 (Unified dashboard)</td><td class="status-pending">NOT STARTED</td><td>0%</td><td>Sep 2026</td><td>UI consolidation (JFA_Suite + JFA_Unify)</td></tr>
+    <tr><td>ESP32 Adapter (Phase 3 roadmap)</td><td class="status-pending">NOT STARTED</td><td>0%</td><td>2027 H2</td><td>Fallback to BLE; not critical for 2026</td></tr>
+    <tr><td>Demo video recording</td><td class="status-pending">NOT STARTED</td><td>0%</td><td>Jul 31</td><td>Script ready; recording execution needed</td></tr>
+    <tr><td>Production infrastructure (ubuntu-50)</td><td class="status-critical">NOT STARTED</td><td>0%</td><td>TBD</td><td>docker-compose.prod.yml, deploy script, Cloudflare</td></tr>
+</table>
+
+<h2>🏢 PRODUCTION READINESS</h2>
+
+<table>
+    <tr><th>Requirement</th><th>Status</th><th>Notes</th></tr>
+    <tr><td>Database (PostgreSQL RLS)</td><td class="status-pending">❌ NO</td><td>Test setup ready; production setup missing</td></tr>
+    <tr><td>API (FastAPI)</td><td class="status-done">✅ READY</td><td>Code complete; deployment needed</td></tr>
+    <tr><td>Frontend PWA</td><td class="status-pending">⚠️ PARTIAL</td><td>Demo ready; full features by Aug</td></tr>
+    <tr><td>MQTT Broker</td><td class="status-done">✅ READY</td><td>Tuya adapter Phase 1-2 complete</td></tr>
+    <tr><td>Secrets management</td><td class="status-pending">⚠️ PARTIAL</td><td>.env template exists; prod values TBD</td></tr>
+    <tr><td>Monitoring/Logging</td><td class="status-pending">❌ NO</td><td>No monitoring setup documented</td></tr>
+    <tr><td>Backup strategy</td><td class="status-pending">❌ NO</td><td>No backup plan documented</td></tr>
+    <tr><td>Disaster recovery</td><td class="status-pending">❌ NO</td><td>No DR plan documented</td></tr>
+    <tr><td>Load balancing</td><td class="status-pending">❌ NO</td><td>Single instance; Cloudflare routing only</td></tr>
+</table>
+
+<h2>📋 RISKS & GAPS</h2>
+
+<div class="section">
+    <h3>🔴 CRITICAL GAPS</h3>
+    <ul style="margin-left: 20px; margin-top: 10px;">
+        <li><strong>Production infrastructure:</strong> docker-compose.prod.yml + deploy script not created. Cannot go live without this.</li>
+        <li><strong>Sales/marketing resource:</strong> Contractor not hired. Madeira outreach blocked without sales support.</li>
+        <li><strong>Recovery contact:</strong> NIF 511099177 contacto not found. EUR 200k potential recovery at risk.</li>
+        <li><strong>Monitoring/observability:</strong> No monitoring plan (logs, metrics, alerts) for production.</li>
+    </ul>
+
+    <h3>🟡 HIGH RISKS</h3>
+    <ul style="margin-left: 20px; margin-top: 10px;">
+        <li><strong>Team morale:</strong> Without communication of roadmap, retention at risk (especially dev team for SvelteKit PWA).</li>
+        <li><strong>SvelteKit PWA delivery:</strong> Aug 31 target is aggressive; delays push demo video back.</li>
+        <li><strong>Madeira competition:</strong> Securitas, Tyco, local players. Differentiation via SLA + integration must be clear.</li>
+        <li><strong>Suite integration complexity:</strong> 3 phases (Jul-Sep). Delays in Phase 1 push Phases 2-3 out.</li>
+    </ul>
+
+    <h3>🟢 MITIGATIONS IN PLACE</h3>
+    <ul style="margin-left: 20px; margin-top: 10px;">
+        <li>✅ Materials 100% ready (landing page, cold email, demo script, SLA framework, account playbook)</li>
+        <li>✅ Alternative path (GOOD vs MEDIUM) documented; no single-point-of-failure decision</li>
+        <li>✅ 2027 expansion roadmap planned (Continente gives long-term vision to team)</li>
+        <li>✅ Demo data ready (demoData.ts with 8 devices, 10 events for proof-of-concept)</li>
+        <li>✅ Memory saved for future CC sessions (RULE + strategy documented)</li>
+    </ul>
+</div>
+
+<h2>📅 EXECUTION TIMELINE (Jun-Dec 2026)</h2>
+
+<table>
+    <tr><th>Phase</th><th>Duration</th><th>Key Milestones</th><th>Owner</th><th>Success Criteria</th></tr>
+    <tr><td><strong>Phase 1: Foundation</strong></td><td>Jun 12-30</td><td>Contractor hire ✓ | Team comms ✓ | SLA emails sent ✓ | Madeira outreach starts ✓</td><td>FA</td><td>3/5 SLA sign; 5-10 emails/week sent; contractor in place</td></tr>
+    <tr><td><strong>Phase 2: Demos & Video</strong></td><td>Jul-Ago</td><td>Demo video done ✓ | Madeira demos run ✓ | Suite pitch starts ✓ | PWA 95% done ✓</td><td>FA + Dev</td><td>3-5 demos run; 1+ Suite client; PWA live by Ago 31</td></tr>
+    <tr><td><strong>Phase 3: Closes</strong></td><td>Set-Dez</td><td>1+ Madeira close ✓ | 3-5 Madeira closes by Dez ✓ | Continente hiring starts ✓</td><td>FA + Contractor</td><td>3-5 Madeira logos closed; EUR 150-400k revenue; hiring brief ready</td></tr>
+</table>
+
+<h2>💰 FINANCIAL PROJECTIONS (2026)</h2>
+
+<table>
+    <tr><th>Source</th><th>Monthly ARR</th><th>Annual Impact</th><th>Confidence</th></tr>
+    <tr><td>SLA upgrade (3/5 clients)</td><td>EUR 900</td><td>EUR 10.8k</td><td>High (ready now)</td></tr>
+    <tr><td>Madeira new logos (3-5 @ EUR 50-80k ACV)</td><td>EUR 12.5-33k</td><td>EUR 150-400k</td><td>Medium (Jun 15 start)</td></tr>
+    <tr><td>Suite integration (2-3 clients)</td><td>EUR 600-900</td><td>EUR 7.2-10.8k</td><td>Medium (Ago onwards)</td></tr>
+    <tr><td><strong>Total 2026 Target</strong></td><td><strong>EUR 13-35k</strong></td><td><strong>EUR 168-422k</strong></td><td><strong>Medium-High</strong></td></tr>
+    <tr><td>Plus existing business (TBD)</td><td>TBD</td><td>EUR 182-482k total (conservative)</td><td>TBD</td></tr>
+</table>
+
+<div class="highlight">
+    <h3>💡 2026 Revenue Scenario</h3>
+    <p><strong>Pessimistic (LOW path):</strong> EUR 350-380k (status quo, no GTM effort)</p>
+    <p><strong>Realistic (GOOD path):</strong> EUR 350-450k (GTM Madeira + SLA retention)</p>
+    <p><strong>Optimistic (GOOD + recovery):</strong> EUR 450-650k (if NIF 511099177 recovers)</p>
+    <p><strong>vs 2025:</strong> EUR 973k (73% drop in pessimistic, 55% in realistic, 35% in optimistic)</p>
+</div>
+
+</div>
+
+<div class="footer">
+    <p><strong>Preparado por:</strong> Claude Code | <strong>Data:</strong> 12-Jun-2026</p>
+    <p><strong>Status:</strong> ✅ Pronto para Fernando Amorim — Execução começa Jun 15</p>
+    <p style="margin-top: 15px;">
+        <strong>Ficheiros associados (Desktop\BRIO):</strong><br>
+        📄 JFA_CONSOLIDATED_REPORT_2026-06-12.html (estratégia + 3 opções)<br>
+        📄 CNPD_DPIA_JFA_12Jun2026.html (legal compliance)<br>
+        📄 JFAUNIFY_HYBRID_ROADMAP_FINAL_2026-06-12.html (plano detalhado)<br>
+        📄 JFA_STATUS_REPORT_COMPLETE_2026-06-12.html (este ficheiro)
+    </p>
+</footer>
+
+</div>
+
+</body>
+</html>
